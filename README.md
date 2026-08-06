@@ -206,18 +206,9 @@ flowchart LR
 
 ---
 
-## License
+## Interface
+<img width="1280" height="681" alt="image" src="https://github.com/user-attachments/assets/b8a348b3-b07c-4667-9c9b-02b52a0261fd" />
 
-This project is open source. Add your preferred license here (e.g., MIT).
-
----
-
-## Author
-
-**Your Name**  
-- GitHub: [@YOUR_USERNAME](https://github.com/YOUR_USERNAME)
-
----
 
 ## Acknowledgments
 
