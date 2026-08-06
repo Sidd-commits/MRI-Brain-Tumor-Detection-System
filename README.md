@@ -208,6 +208,10 @@ flowchart LR
 
 ## Interface
 <img width="1280" height="681" alt="image" src="https://github.com/user-attachments/assets/b8a348b3-b07c-4667-9c9b-02b52a0261fd" />
+<img width="1280" height="683" alt="image" src="https://github.com/user-attachments/assets/77ad658c-4f8a-4d47-be49-8bf1c265b23a" />
+<img width="1280" height="682" alt="image" src="https://github.com/user-attachments/assets/aeb211ed-10d1-4eda-a6c3-167b2622d305" />
+
+
 
 
 ## Acknowledgments
