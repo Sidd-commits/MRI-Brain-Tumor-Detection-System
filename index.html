@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MRI Tumor Detection System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%);
+            animation: pulse 20s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header Section */
+        .header-container {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .icon-wrapper {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 25px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .icon-wrapper::before {
+            content: '🧠';
+            font-size: 50px;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 15px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 500px;
+            margin: 0 auto;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Card Styling */
+        .card {
+            border-radius: 25px;
+            border: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-body {
+            padding: 40px;
+        }
+
+        /* Form Styling */
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .custom-file-upload {
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            background: linear-gradient(135deg, #f6f8ff 0%, #f0f4ff 100%);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .custom-file-upload:hover {
+            border-color: #764ba2;
+            background: linear-gradient(135deg, #f0f4ff 0%, #ebe8ff 100%);
+            transform: scale(1.02);
+        }
+
+        .custom-file-upload i {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .custom-file-upload p {
+            color: #666;
+            font-size: 1.1rem;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+
+        .custom-file-upload span {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .file-name-display {
+            margin-top: 15px;
+            padding: 12px 20px;
+            background: #f0f4ff;
+            border-radius: 10px;
+            color: #667eea;
+            font-weight: 500;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Button Styling */
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            border: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-text {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Results Section */
+        #results {
+            margin-top: 30px;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 35px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: none;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .result-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .result-title.success {
+            color: #10b981;
+        }
+
+        .result-title.warning {
+            color: #f59e0b;
+        }
+
+        .result-title.error {
+            color: #ef4444;
+        }
+
+        .confidence-badge {
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .image-container {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .image-container:hover {
+            transform: scale(1.02);
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            max-height: 500px;
+            object-fit: contain;
+        }
+
+        /* Tumor Information Section */
+        .tumor-info-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 35px;
+            margin-top: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: none;
+            animation: fadeInUp 1s ease-out 0.9s both;
+        }
+
+        .tumor-info-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #f0f0f0;
+        }
+
+        .tumor-info-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .tumor-info-icon.glioma {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        }
+
+        .tumor-info-icon.meningioma {
+            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+        }
+
+        .tumor-info-icon.pituitary {
+            background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+        }
+
+        .tumor-info-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #333;
+            margin: 0;
+        }
+
+        .tumor-info-subtitle {
+            font-size: 1rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .tumor-info-content {
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .info-section {
+            margin-bottom: 30px;
+        }
+
+        .info-section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-section-title svg {
+            color: #667eea;
+        }
+
+        .info-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-list li {
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.05), transparent);
+            border-left: 3px solid #667eea;
+            border-radius: 8px;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .info-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 5px;
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        .tumor-statistics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .stat-box-number {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .stat-box-label {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .card-body {
+                padding: 25px;
+            }
+
+            .custom-file-upload {
+                padding: 30px 20px;
+            }
+
+            .custom-file-upload i {
+                font-size: 2.5rem;
+            }
+
+            .result-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .tumor-info-card {
+                padding: 25px;
+            }
+
+            .tumor-info-title {
+                font-size: 1.5rem;
+            }
+
+            .tumor-statistics {
+                grid-template-columns: 1fr;
+            }
+
+            .info-section-title {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Loading animation placeholder */
+        .loading-spinner {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(102, 126, 234, 0.1);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <!-- Header Section -->
+        <div class="header-container">
+            <div class="icon-wrapper"></div>
+            <h1>MRI Tumor Detection System</h1>
+            <p class="subtitle">Advanced AI-powered brain tumor detection using deep learning technology</p>
+        </div>
+
+        <!-- File Upload Form -->
+        <div class="card shadow">
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data" id="uploadForm">
+                    <label class="form-label">Upload MRI Image</label>
+                    
+                    <div class="file-input-wrapper">
+                        <div class="custom-file-upload" onclick="document.getElementById('file').click()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 16 16" style="color: #667eea;">
+                                <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                                <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+                            </svg>
+                            <p style="color: #667eea; font-weight: 600; margin-top: 15px;">Click to Select Image</p>
+                            <span>or drag and drop your MRI scan here</span>
+                        </div>
+                        <input type="file" class="form-control" id="file" name="file" accept="image/*" required>
+                        <div class="file-name-display" id="fileName"></div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <span class="btn-text">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" style="display: inline-block; margin-right: 8px; vertical-align: middle;">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 2.604 6.496a.235.235 0 0 0-.227-.41.288.288 0 0 0-.027.06l-.5 2.5a.248.248 0 0 0 .037.11l2.5 1.5a.247.247 0 0 0 .296-.04l4.5-4.5a.248.248 0 0 0 .05-.05zm.17-1.03a.247.247 0 0 0-.296.04L7.17 7.95l-1.5-1.5a.248.248 0 0 0-.05-.05.249.249 0 0 0-.265.05l-2.5 1.5a.248.248 0 0 0-.07.073l-.03.06.5 2.5a.248.248 0 0 0 .17.15l2.5.5a.248.248 0 0 0 .1-.013 2.69 2.69 0 0 0 .063-.04l1.5 1.5a.248.248 0 0 0 .265.05 2.68 2.68 0 0 0 .063-.04l4.5-4.5a.248.248 0 0 0-.05-.05.249.249 0 0 0-.05-.05zm-1.83-.97a.248.248 0 0 0-.296.04L7.17 6.95l-1.5-1.5a.248.248 0 0 0-.05-.05.249.249 0 0 0-.265.05l-2.5 1.5a.248.248 0 0 0-.07.073l-.03.06.5 2.5a.248.248 0 0 0 .17.15l2.5.5a.248.248 0 0 0 .1-.013 2.69 2.69 0 0 0 .063-.04l1.5 1.5a.248.248 0 0 0 .265.05 2.68 2.68 0 0 0 .063-.04l4.5-4.5a.248.248 0 0 0-.05-.05.249.249 0 0 0-.05-.05zm-1.83-.97a.248.248 0 0 0-.296.04L7.17 5.95l-1.5-1.5a.248.248 0 0 0-.05-.05.249.249 0 0 0-.265.05l-2.5 1.5a.248.248 0 0 0-.07.073l-.03.06.5 2.5a.248.248 0 0 0 .17.15l2.5.5a.248.248 0 0 0 .1-.013 2.69 2.69 0 0 0 .063-.04l1.5 1.5a.248.248 0 0 0 .265.05 2.68 2.68 0 0 0 .063-.04l4.5-4.5a.248.248 0 0 0-.05-.05.249.249 0 0 0-.05-.05z"/>
+                            </svg>
+                            Analyze MRI Scan
+                        </span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        {% if result %}
+        <!-- Display Results -->
+        <div id="results">
+            <div class="result-card">
+                <div class="result-header">
+                    <h3 class="result-title {{ 'success' if 'No Tumor' in result else 'warning' if 'Tumor' in result else 'error' }}">
+                        {% if 'No Tumor' in result %}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.061L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                            </svg>
+                        {% else %}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                            </svg>
+                        {% endif %}
+                        {{ result }}
+                    </h3>
+                    <div class="confidence-badge">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+                        </svg>
+                        {{ confidence }}% Confidence
+                    </div>
+                </div>
+                <div class="image-container">
+                    <img src="{{ file_path }}" class="img-fluid" alt="Uploaded MRI Image">
+                </div>
+            </div>
+
+            <!-- Tumor Information Section -->
+            {% if tumor_type and tumor_type != 'notumor' %}
+            <div class="tumor-info-card">
+                <div class="tumor-info-header">
+                    <div class="tumor-info-icon {{ tumor_type }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M5.757 1.071a.5.5 0 0 1 .172.686L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15.5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H.5a.5.5 0 0 1-.5-.5v-1A.5.5 0 0 1 .5 6h1.717L5.07 1.243a.5.5 0 0 1 .686-.172zM3.394 15l-1.48-6h13.172l-1.48 6H3.394z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="tumor-info-title">{{ tumor_type.capitalize() }}</h2>
+                        <p class="tumor-info-subtitle">Clinical Information</p>
+                    </div>
+                </div>
+
+                <div class="tumor-info-content">
+                    {% if tumor_type == 'glioma' %}
+                    <div class="info-section">
+                        <h3 class="info-section-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5 8.186 1.113zM15 8.5l-4.998 1.144A1 1 0 0 1 9 10v4.5h4.5a.5.5 0 0 1 .5.5v.5a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-.5a.5.5 0 0 1 .5-.5H6v-4.5a1 1 0 0 1-1.998-.257L0 8.5V2a.5.5 0 0 1 .673-.259L8 .5l7.327 1.241A.5.5 0 0 1 16 2v6.5z"/>
+                            </svg>
+                            What is Glioma?
+                        </h3>
+                        <p style="margin-bottom: 20px;">Glioma is a type of tumor that occurs in the brain and spinal cord. Gliomas begin in the glial cells — supportive cells that surround nerve cells and help them function. These tumors can be malignant and arise from glial tissue in the central nervous system.</p>
+                        
+                        <div class="tumor-statistics">
+                            <div class="stat-box">
+                                <div class="stat-box-number">30%</div>
+                                <div class="stat-box-label">of brain tumors</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-box-number">Variable</div>
+                                <div class="stat-box-label">Grade classification</div>
+                            </div>
+                        </div>
+
+                        <h3 class="info-section-title" style="margin-top: 30px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
+                            </svg>
+                            Common Characteristics
+                        </h3>
+                        <ul class="info-list">
+                            <li>Originates from glial cells (astrocytes, oligodendrocytes, ependymal cells)</li>
+                            <li>Can be low-grade (slow-growing) or high-grade (fast-growing)</li>
+                            <li>Common symptoms include headaches, seizures, and neurological deficits</li>
+                            <li>Typically requires medical imaging like MRI for accurate diagnosis</li>
+                        </ul>
+                    </div>
+
+                    {% elif tumor_type == 'meningioma' %}
+                    <div class="info-section">
+                        <h3 class="info-section-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5 8.186 1.113zM15 8.5l-4.998 1.144A1 1 0 0 1 9 10v4.5h4.5a.5.5 0 0 1 .5.5v.5a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-.5a.5.5 0 0 1 .5-.5H6v-4.5a1 1 0 0 1-1.998-.257L0 8.5V2a.5.5 0 0 1 .673-.259L8 .5l7.327 1.241A.5.5 0 0 1 16 2v6.5z"/>
+                            </svg>
+                            What is Meningioma?
+                        </h3>
+                        <p style="margin-bottom: 20px;">Meningioma is a type of tumor that forms in the meninges, the membrane layers that cover the brain and spinal cord. Most meningiomas are benign (non-cancerous), though some can be malignant. They typically grow slowly and may not cause symptoms for years.</p>
+                        
+                        <div class="tumor-statistics">
+                            <div class="stat-box">
+                                <div class="stat-box-number">90%</div>
+                                <div class="stat-box-label">are benign</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-box-number">Most common</div>
+                                <div class="stat-box-label">in adults</div>
+                            </div>
+                        </div>
+
+                        <h3 class="info-section-title" style="margin-top: 30px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
+                            </svg>
+                            Key Features
+                        </h3>
+                        <ul class="info-list">
+                            <li>Most commonly benign brain tumor, accounting for about 30% of primary brain tumors</li>
+                            <li>Usually grows slowly and may not cause symptoms immediately</li>
+                            <li>Commonly affects middle-aged to older adults, with higher incidence in women</li>
+                            <li>Diagnosis typically involves MRI or CT scans showing well-defined masses</li>
+                        </ul>
+                    </div>
+
+                    {% elif tumor_type == 'pituitary' %}
+                    <div class="info-section">
+                        <h3 class="info-section-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5 8.186 1.113zM15 8.5l-4.998 1.144A1 1 0 0 1 9 10v4.5h4.5a.5.5 0 0 1 .5.5v.5a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-.5a.5.5 0 0 1 .5-.5H6v-4.5a1 1 0 0 1-1.998-.257L0 8.5V2a.5.5 0 0 1 .673-.259L8 .5l7.327 1.241A.5.5 0 0 1 16 2v6.5z"/>
+                            </svg>
+                            What is Pituitary Tumor?
+                        </h3>
+                        <p style="margin-bottom: 20px;">Pituitary tumors are abnormal growths in the pituitary gland, a pea-sized organ at the base of the brain that controls many body functions through hormone production. Most pituitary tumors are benign and do not spread beyond the pituitary gland.</p>
+                        
+                        <div class="tumor-statistics">
+                            <div class="stat-box">
+                                <div class="stat-box-number">10-15%</div>
+                                <div class="stat-box-label">of brain tumors</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-box-number">Hormone</div>
+                                <div class="stat-box-label">related impact</div>
+                            </div>
+                        </div>
+
+                        <h3 class="info-section-title" style="margin-top: 30px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
+                            </svg>
+                            Important Information
+                        </h3>
+                        <ul class="info-list">
+                            <li>Located at the base of the brain, often affecting hormone levels in the body</li>
+                            <li>Most pituitary tumors are benign (non-cancerous) and slow-growing</li>
+                            <li>Can cause symptoms related to hormone imbalance or pressure on surrounding tissues</li>
+                            <li>Treatment may involve surgery, medication, or radiation therapy depending on size and type</li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Display selected file name
+        document.getElementById('file').addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name;
+            const fileNameDisplay = document.getElementById('fileName');
+            
+            if (fileName) {
+                fileNameDisplay.textContent = '📄 Selected: ' + fileName;
+                fileNameDisplay.style.display = 'block';
+            } else {
+                fileNameDisplay.style.display = 'none';
+            }
+        });
+
+        // Form submission loading state
+        document.getElementById('uploadForm').addEventListener('submit', function() {
+            const btn = this.querySelector('button');
+            btn.innerHTML = '<span class="btn-text"><div class="spinner" style="display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; margin-right: 10px; vertical-align: middle;"></div>Analyzing...</span>';
+            btn.disabled = true;
+            btn.style.cursor = 'not-allowed';
+        });
+    </script>
+</body>
+</html>
