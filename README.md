@@ -1,6 +1,13 @@
 # MRI Brain Tumor Detection System
 
-A deep learning project that classifies brain MRI scans into four categories — **Glioma**, **Meningioma**, **Pituitary**, and **No Tumor** — using transfer learning with VGG16, deployed as a Flask web application.
+[![Live Demo](https://img.shields.io/badge/Render-Live%20Demo-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://mribraintumordetection.onrender.com)
+[![Python](https://img.shields.io/badge/Python-3.10-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.18-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)](https://tensorflow.org)
+[![Flask](https://img.shields.io/badge/Flask-3.1-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com)
+
+A deep learning clinical workstation that classifies brain MRI scans into four categories — **Glioma**, **Meningioma**, **Pituitary**, and **No Tumor** — using transfer learning with VGG16, Grad-CAM spatial explainability, and an automated Clinical Domain Validation Gate to reject non-MRI images.
+
+🌐 **Live Web Application:** [https://mribraintumordetection.onrender.com](https://mribraintumordetection.onrender.com)
 
 > **Disclaimer:** This project is for educational and research purposes only. It is not a substitute for professional medical diagnosis. Always consult a qualified healthcare provider for clinical decisions.
 
@@ -122,29 +129,47 @@ The model is trained on a **Brain Tumor MRI** dataset with four classes:
    pip install -r requirements.txt
    ```
 
-4. **Place the trained model**
+4. **Trained Model**
 
-   Ensure `models/model.h5` exists. Train it using the Jupyter notebook in `models/`, or add your own exported model file.
+   The repository includes the production-optimized model weights (`models/model.h5`, 60 MB), fully packaged for direct deployment without external storage setup.
+
+---
+
+## Cloud Deployment (Render)
+
+This repository is pre-configured with a native Render Blueprint (`render.yaml`) and `Procfile`.
+
+1. Go to [Render Dashboard](https://dashboard.render.com/) and click **New + > Web Service**.
+2. Connect your GitHub repository: `Sidd-commits/MRI-Brain-Tumor-Detection-System`.
+3. Configure the service settings:
+   - **Name:** `mribraintumordetection` (URL will be `https://mribraintumordetection.onrender.com`)
+   - **Environment:** `Python 3`
+   - **Branch:** `main`
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `gunicorn main:app --timeout 120 --workers 1 --threads 4`
+   - **Plan:** Free
+4. Click **Deploy Web Service**.
 
 ---
 
 ## Usage
 
-### Run the web application
+### Run the web application locally
 
 ```bash
 python main.py
 ```
 
-Open your browser and go to:
+Open your browser and navigate to:
 
 ```
 http://127.0.0.1:5000
 ```
 
-1. Upload a brain MRI image (JPG/PNG)
-2. Click **Analyze MRI Scan**
-3. View the prediction, confidence score, and tumor information (if applicable)
+1. Upload a brain MRI image (JPG, PNG, or WEBP) or click any of the 4 benchmark scans.
+2. Click **Run Diagnostic Scan**.
+3. View the prediction, confidence breakdown, Grad-CAM activation overlay, and clinical summary.
+4. Export or print a publication-grade diagnostic report with 1-click.
 
 ### Train the model (optional)
 
@@ -175,49 +200,53 @@ Per-class performance on the complete test set:
 
 ```mermaid
 flowchart LR
-    A[User uploads MRI] --> B[Flask Backend]
-    B --> C[Preprocess image]
-    C --> D[VGG16 Model]
-    D --> E[Softmax prediction]
-    E --> F[Display result + confidence]
+    A[User uploads Image] --> B[Clinical Domain Gate]
+    B -- Non-MRI / Screenshot --> C[Reject with Plain UX Guidance]
+    B -- Valid MRI --> D[VGG16 Model]
+    D --> E[Softmax Distribution]
+    D --> F[Grad-CAM block5_conv3]
+    E --> G[Pathology Workstation & Report]
+    F --> G
 ```
 
-1. User uploads an MRI image via the web form
-2. Flask saves the file and preprocesses it (resize, normalize)
-3. The trained VGG16 model predicts one of four classes
-4. Results are rendered in the UI with confidence and clinical info
+1. **Upload & Ingestion:** Image is received and sanitized.
+2. **Clinical Domain Validation Gate:** Out-of-distribution (OOD) filter checks chromatic divergence, perimeter air borders, anatomical topology, and gradient uniformity to intercept non-MRI images.
+3. **Deep CNN Inference:** VGG-16 transfer learning computes multi-class softmax probabilities.
+4. **Grad-CAM Explainability:** Backpropagates gradients into `block5_conv3` to highlight the exact anatomical lesion activating the classification.
+5. **Interactive Report:** User explores pathology characteristics, confidence metrics, and can print a clinical PDF report.
 
 ---
 
 ## Limitations
 
-- Single 2D MRI slice only (not full 3D volume analysis)
-- Not clinically validated for real-world medical use
-- Performance depends on image quality and similarity to training data
-- Requires the pre-trained `model.h5` file to run the web app
+- Single 2D MRI slice analysis (not full volumetric 3D DICOM series)
+- Designed for academic and research validation; not certified for clinical diagnostic decision-making
+- Requires standard axial brain MRI acquisitions for optimal Grad-CAM localization
 
 ---
 
 ## Future Improvements
 
 - [x] Add Grad-CAM visualization for explainability (Implemented)
-- [ ] Support DICOM medical image format
-- [ ] Deploy to cloud (Render, AWS, etc.)
-- [ ] Try other architectures (ResNet50, EfficientNet)
-- [ ] Add validation split and hyperparameter tuning
+- [x] Deploy to cloud (Render: `https://mribraintumordetection.onrender.com`)
+- [x] Clinical Domain Validation Gate for OOD rejection (Implemented)
+- [x] Print / PDF Clinical Diagnostic Report Generator (Implemented)
+- [ ] Support native DICOM (.dcm) medical image format
+- [ ] Multi-slice volumetric 3D analysis
 
 ---
 
 ## License
 
-This project is open source. Add your preferred license here (e.g., MIT).
+This project is licensed under the MIT License.
 
 ---
 
 ## Author
 
-**Your Name**  
-- GitHub: [@YOUR_USERNAME](https://github.com/YOUR_USERNAME)
+**Siddhant Sawant**  
+- GitHub: [@Sidd-commits](https://github.com/Sidd-commits)
+- Repository: [MRI-Brain-Tumor-Detection-System](https://github.com/Sidd-commits/MRI-Brain-Tumor-Detection-System)
 
 ---
 

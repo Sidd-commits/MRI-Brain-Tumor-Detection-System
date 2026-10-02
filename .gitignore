@@ -39,9 +39,10 @@ uploads/*
 # Raw large dataset (7,000+ MRI slices, hosted on Kaggle)
 MRI Images/
 
-# Model weights (>100MB exceeds standard GitHub file limits)
-models/*.h5
+# Model weights (>100MB exceeds standard GitHub limits; 60MB deploy model is tracked)
 models/*.keras
+models/*_checkpoint*.h5
+!models/model.h5
 
 # OS generated files
 .DS_Store
