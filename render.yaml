@@ -2,7 +2,7 @@ services:
   - type: web
     name: mribraintumordetection
     runtime: python
-    region: oregon
+    region: virginia
     plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn main:app --timeout 120 --workers 1 --threads 4
