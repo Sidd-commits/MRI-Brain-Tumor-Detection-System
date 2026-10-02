@@ -74,11 +74,6 @@ MRI-Brain-Tumor-Detection-System/
 ├── render.yaml                                       # Native Render Infrastructure-as-Code blueprint
 ├── requirements.txt                                  # Pinned Python dependencies
 │
-├── assets/                                           # Interface screenshots & demonstrations
-│   ├── clinical-info.png                             # Pathology details UI
-│   ├── prediction-result.png                         # Classification & Grad-CAM view
-│   └── upload-screen.png                             # Initial workstation landing view
-│
 ├── models/                                           # Deep learning model artifacts
 │   ├── brain_tumour_detection_using_deep_learning.ipynb # Research & transfer learning notebook
 │   ├── detector_weights.weights.h5                   # Functional VGG-16 model weights checkpoint
