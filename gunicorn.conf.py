@@ -14,3 +14,17 @@ preload_app = False
 accesslog = "-"
 errorlog = "-"
 loglevel = "info"
+
+def post_fork(server, worker):
+    """
+    Hook executed in worker process after fork().
+    Initializes TensorFlow cleanly inside the worker process to avoid
+    inheriting deadlocked C++ mutexes from master process pre-fork state.
+    """
+    server.log.info("Worker %s spawned: initializing TensorFlow runtime...", worker.pid)
+    try:
+        import main
+        main.init_model()
+        server.log.info("Worker %s: Model initialization and warmup complete.", worker.pid)
+    except Exception as e:
+        server.log.error("Worker %s model initialization error: %s", worker.pid, e)

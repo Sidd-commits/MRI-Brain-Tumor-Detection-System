@@ -44,16 +44,9 @@ def build_brain_tumor_detector():
     outputs = tf.keras.layers.Dense(4, activation='softmax', name='dense_1')(x)
     return tf.keras.Model(inputs=inputs, outputs=outputs, name='mri_vgg16_detector')
 
-model = build_brain_tumor_detector()
-
-# Load weights safely from weights file (primary) or legacy h5 (fallback)
+# Model, weights, and Grad-CAM runtime state
 WEIGHTS_PATH = os.path.join(BASE_DIR, 'models', 'detector_weights.weights.h5')
 LEGACY_MODEL_PATH = os.path.join(BASE_DIR, 'models', 'model.h5')
-
-if os.path.exists(WEIGHTS_PATH):
-    model.load_weights(WEIGHTS_PATH)
-elif os.path.exists(LEGACY_MODEL_PATH):
-    model.load_weights(LEGACY_MODEL_PATH)
 
 # Class labels mapped directly to model output indices:
 # Index 0: Glioma | Index 1: No Tumor | Index 2: Pituitary | Index 3: Meningioma
@@ -73,44 +66,70 @@ SAMPLE_SCANS = [
     {'name': 'Healthy Control', 'type': 'notumor', 'filename': 'Te-noTr_0004.jpg', 'tag': 'No Tumor Detected'}
 ]
 
-# Build Grad-CAM explainability graph directly from the unified functional model
-try:
-    last_conv_layer = model.get_layer('block5_conv3')
-    grad_model = tf.keras.Model(inputs=model.inputs, outputs=[last_conv_layer.output, model.output])
-    GRADCAM_SUPPORTED = True
-except Exception as e:
-    print(f"Warning: Grad-CAM models could not be initialized: {e}")
-    GRADCAM_SUPPORTED = False
+_MODEL_INITIALIZED = False
+model = None
+grad_model = None
+GRADCAM_SUPPORTED = False
+compute_gradcam_tensor = None
+JET_LUT = None
 
-# Precompute static Jet colormap lookup table (256x3 uint8) to avoid matplotlib runtime overhead
-JET_LUT = (matplotlib.colormaps['jet'](np.arange(256))[:, :3] * 255).astype(np.uint8)
+def init_model():
+    """
+    Initializes TensorFlow model, Grad-CAM graph, and warm-up compilation inside
+    the worker process. This avoids Gunicorn pre-fork deadlock on Linux where
+    TensorFlow C++ threadpool mutexes get permanently locked across fork().
+    """
+    global _MODEL_INITIALIZED, model, grad_model, GRADCAM_SUPPORTED, compute_gradcam_tensor, JET_LUT
+    if _MODEL_INITIALIZED and model is not None:
+        return True
 
+    print("[NeuroScan] Initializing TensorFlow model inside worker process...")
+    model = build_brain_tumor_detector()
+    if os.path.exists(WEIGHTS_PATH):
+        model.load_weights(WEIGHTS_PATH)
+    elif os.path.exists(LEGACY_MODEL_PATH):
+        model.load_weights(LEGACY_MODEL_PATH)
 
-@tf.function(reduce_retracing=True)
-def compute_gradcam_tensor(img_tensor):
-    """XLA/Graph-compiled fast Grad-CAM execution (sub-second on CPU)."""
-    with tf.GradientTape() as tape:
-        conv_outputs, preds = grad_model(img_tensor, training=False)
-        top_idx = tf.argmax(preds[0])
-        top_val = preds[:, top_idx]
+    try:
+        last_conv_layer = model.get_layer('block5_conv3')
+        grad_model = tf.keras.Model(inputs=model.inputs, outputs=[last_conv_layer.output, model.output])
+        GRADCAM_SUPPORTED = True
 
-    grads = tape.gradient(top_val, conv_outputs)
-    pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
-    conv_outputs = conv_outputs[0]
-    heatmap = conv_outputs @ pooled_grads[..., tf.newaxis]
-    heatmap = tf.squeeze(heatmap)
-    heatmap = tf.maximum(heatmap, 0.0)
-    return heatmap / (tf.math.reduce_max(heatmap) + 1e-10)
+        @tf.function(reduce_retracing=True)
+        def _compute_gc(img_tensor):
+            with tf.GradientTape() as tape:
+                conv_outputs, preds = grad_model(img_tensor, training=False)
+                top_idx = tf.argmax(preds[0])
+                top_val = preds[:, top_idx]
 
+            grads = tape.gradient(top_val, conv_outputs)
+            pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
+            conv_outputs = conv_outputs[0]
+            heatmap = conv_outputs @ pooled_grads[..., tf.newaxis]
+            heatmap = tf.squeeze(heatmap)
+            heatmap = tf.maximum(heatmap, 0.0)
+            return heatmap / (tf.math.reduce_max(heatmap) + 1e-10)
 
-# Model warmup: prime TensorFlow graph compilation during boot so user scans are instant
-try:
-    _warmup_input = tf.zeros((1, 128, 128, 3), dtype=tf.float32)
-    _ = model(_warmup_input, training=False)
-    if GRADCAM_SUPPORTED:
-        _ = compute_gradcam_tensor(_warmup_input)
-except Exception as _w_err:
-    print(f"Warmup notice: {_w_err}")
+        compute_gradcam_tensor = _compute_gc
+    except Exception as e:
+        print(f"Warning: Grad-CAM models could not be initialized: {e}")
+        GRADCAM_SUPPORTED = False
+
+    # Precompute static Jet colormap lookup table (256x3 uint8)
+    JET_LUT = (matplotlib.colormaps['jet'](np.arange(256))[:, :3] * 255).astype(np.uint8)
+
+    # Worker warmup pass
+    try:
+        _warmup_input = tf.zeros((1, 128, 128, 3), dtype=tf.float32)
+        _ = model(_warmup_input, training=False)
+        if GRADCAM_SUPPORTED and compute_gradcam_tensor is not None:
+            _ = compute_gradcam_tensor(_warmup_input)
+        print("[NeuroScan] TensorFlow model and Grad-CAM compilation warm.")
+    except Exception as _w_err:
+        print(f"Warmup notice: {_w_err}")
+
+    _MODEL_INITIALIZED = True
+    return True
 
 
 def allowed_file(filename):
@@ -255,7 +274,10 @@ def verify_is_brain_mri(image_path):
 
 def generate_gradcam_overlay(image_path, output_path):
     """Generates a Grad-CAM heatmap overlaid on the MRI scan with strict memory bounds."""
-    if not GRADCAM_SUPPORTED:
+    if not _MODEL_INITIALIZED or model is None:
+        init_model()
+
+    if not GRADCAM_SUPPORTED or compute_gradcam_tensor is None:
         return False
 
     try:
@@ -291,6 +313,9 @@ def predict_tumor(image_path):
     Loads, preprocesses, and predicts class for an MRI image.
     Returns: (result_text, confidence_float, tumor_type_str, probabilities_dict, gradcam_filename)
     """
+    if not _MODEL_INITIALIZED or model is None:
+        init_model()
+
     IMAGE_SIZE = 128
     with Image.open(image_path) as raw_img:
         img = raw_img.convert('RGB').resize((IMAGE_SIZE, IMAGE_SIZE))
@@ -457,5 +482,6 @@ def get_sample_file(filename):
 
 
 if __name__ == '__main__':
+    init_model()
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
