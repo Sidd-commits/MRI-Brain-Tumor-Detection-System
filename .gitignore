@@ -1,12 +1,10 @@
-# Byte-compiled / optimized / DLL files
+# ==========================================
+# Python Byte-compiled & Runtime Artifacts
+# ==========================================
 __pycache__/
 *.py[cod]
 *$py.class
-
-# C extensions
 *.so
-
-# Distribution / packaging
 .Python
 build/
 develop-eggs/
@@ -23,8 +21,12 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+*.manifest
+*.spec
 
-# Virtual environments
+# ==========================================
+# Virtual Environments
+# ==========================================
 venv/
 env/
 ENV/
@@ -32,35 +34,74 @@ ENV/
 env.bak/
 venv.bak/
 
-# Uploads directory (retain folder structure via .gitkeep, ignore runtime files)
-uploads/*
-!uploads/.gitkeep
+# ==========================================
+# Secrets, Credentials & Sensitive Data
+# ==========================================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cer
+*.crt
+*.pfx
+*.p12
+credentials.json
+client_secret*.json
+secrets/
+*.token
+*.auth
 
-# Raw large dataset (7,000+ MRI slices, hosted on Kaggle)
-MRI Images/
+# ==========================================
+# Testing & Code Coverage
+# ==========================================
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
 
-# Model weights (>100MB exceeds standard GitHub limits; 60MB deploy model is tracked)
-models/*.keras
-models/*_checkpoint*.h5
-!models/model.h5
-!models/detector_weights.weights.h5
-
-# OS generated files
+# ==========================================
+# Operating System Files
+# ==========================================
 .DS_Store
-Thumbs.db
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
 ehthumbs.db
+Thumbs.db
 desktop.ini
 
-# IDE and editor files
+# ==========================================
+# IDE & Local Development Settings
+# ==========================================
 .idea/
 .vscode/
 *.swp
 *.swo
+*.sublime-project
+*.sublime-workspace
+.agents/
+.gemini/
 
-# Environment variables
-.env
-.env.local
-
-# Logs and scratch
-*.log
+# ==========================================
+# Application Runtime & Upload Directories
+# ==========================================
+uploads/*
+!uploads/.gitkeep
 scratch/
+*.log
+
+# ==========================================
+# Large Datasets & Heavy Model Artifacts
+# ==========================================
+# Raw full dataset (7,000+ MRI slices, hosted on Kaggle)
+MRI Images/
+
+# Heavy model formats and training checkpoints
+models/*.keras
+models/*_checkpoint*.h5
+!models/model.h5
+!models/detector_weights.weights.h5

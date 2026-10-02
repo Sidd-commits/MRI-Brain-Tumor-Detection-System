@@ -27,6 +27,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SAMPLE_FOLDER'] = SAMPLE_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB limit
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'neuroscan-production-secure-entropy-key')
 
 # Build unified Functional model architecture
 def build_brain_tumor_detector():
