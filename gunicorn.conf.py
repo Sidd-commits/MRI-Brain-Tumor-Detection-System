@@ -4,10 +4,10 @@ import os
 port = os.environ.get("PORT", "10000")
 bind = f"0.0.0.0:{port}"
 
-# Free-tier memory constraints (512 MB RAM)
+# Free-tier memory & concurrency optimization (512 MB RAM)
 workers = 1
-threads = 2
-timeout = 120
+threads = 4
+timeout = 180
 keepalive = 5
 preload_app = False
 accesslog = "-"

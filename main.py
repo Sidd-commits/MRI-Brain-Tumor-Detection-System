@@ -83,10 +83,30 @@ except Exception as e:
     print(f"Warning: Grad-CAM models could not be initialized: {e}")
     GRADCAM_SUPPORTED = False
 
-# Model warmup: prime TensorFlow graph execution on startup
+
+@tf.function(reduce_retracing=True)
+def compute_gradcam_tensor(img_tensor):
+    """XLA/Graph-compiled fast Grad-CAM execution (sub-second on CPU)."""
+    with tf.GradientTape() as tape:
+        conv_outputs, preds = grad_model(img_tensor, training=False)
+        top_idx = tf.argmax(preds[0])
+        top_val = preds[:, top_idx]
+
+    grads = tape.gradient(top_val, conv_outputs)
+    pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
+    conv_outputs = conv_outputs[0]
+    heatmap = conv_outputs @ pooled_grads[..., tf.newaxis]
+    heatmap = tf.squeeze(heatmap)
+    heatmap = tf.maximum(heatmap, 0.0)
+    return heatmap / (tf.math.reduce_max(heatmap) + 1e-10)
+
+
+# Model warmup: prime TensorFlow graph compilation during boot so user scans are instant
 try:
-    _warmup_input = np.zeros((1, 128, 128, 3), dtype=np.float32)
-    model.predict(_warmup_input, verbose=0)
+    _warmup_input = tf.zeros((1, 128, 128, 3), dtype=tf.float32)
+    _ = model(_warmup_input, training=False)
+    if GRADCAM_SUPPORTED:
+        _ = compute_gradcam_tensor(_warmup_input)
 except Exception as _w_err:
     print(f"Warmup notice: {_w_err}")
 
@@ -237,19 +257,9 @@ def generate_gradcam_overlay(image_path, output_path):
         with Image.open(image_path) as raw_img:
             img = raw_img.convert('RGB').resize((128, 128))
         img_array = np.expand_dims(np.array(img, dtype=np.float32) / 255.0, axis=0)
+        img_tensor = tf.convert_to_tensor(img_array)
 
-        with tf.GradientTape() as tape:
-            conv_outputs, preds = grad_model(img_array)
-            top_idx = tf.argmax(preds[0])
-            top_val = preds[:, top_idx]
-
-        grads = tape.gradient(top_val, conv_outputs)
-        pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
-        conv_outputs = conv_outputs[0]
-        heatmap = conv_outputs @ pooled_grads[..., tf.newaxis]
-        heatmap = tf.squeeze(heatmap)
-        heatmap = tf.maximum(heatmap, 0) / (tf.math.reduce_max(heatmap) + 1e-10)
-        heatmap = heatmap.numpy()
+        heatmap = compute_gradcam_tensor(img_tensor).numpy()
 
         # Resize heatmap to original image dimensions
         orig_img = Image.open(image_path).convert('RGB')
@@ -281,7 +291,7 @@ def predict_tumor(image_path):
     img_array = np.array(img, dtype=np.float32) / 255.0
     img_array = np.expand_dims(img_array, axis=0)
 
-    raw_preds = model.predict(img_array, verbose=0)[0]
+    raw_preds = model(img_array, training=False).numpy()[0]
     predicted_class_index = int(np.argmax(raw_preds))
     confidence_score = float(raw_preds[predicted_class_index])
     tumor_type = CLASS_LABELS[predicted_class_index]
