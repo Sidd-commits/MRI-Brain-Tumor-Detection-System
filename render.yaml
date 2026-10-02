@@ -4,10 +4,10 @@ services:
     runtime: python
     region: virginia
     plan: free
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
     startCommand: gunicorn main:app --timeout 120 --workers 1 --threads 4
     envVars:
       - key: PYTHON_VERSION
-        value: 3.10.14
+        value: 3.11.9
       - key: FLASK_DEBUG
         value: "0"
