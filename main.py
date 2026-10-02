@@ -76,19 +76,32 @@ def verify_is_brain_mri(image_path):
       - Computer screenshots (code, browser windows, desktop)
       - Blank, solid, or uniform noise images
       - Non-cranial objects
-    Returns: (is_valid: bool, rejection_reason: str or None)
+    Returns: (is_valid: bool, rejection_info: dict or None)
+    
+    Rejection info contains plain, user-friendly language designed for intuitive user experience:
+      - 'detected_type': Simple category label (e.g. 'Color Photo or Screenshot')
+      - 'simple_reason': Clear 1-sentence explanation without technical jargon
+      - 'tip': Helpful action recommendation
     """
     try:
         with Image.open(image_path) as raw_img:
             img = raw_img.convert('RGB')
     except Exception:
-        return False, "Unreadable or corrupted image file."
+        return False, {
+            'detected_type': 'Unreadable File',
+            'simple_reason': 'This file could not be opened as a readable image.',
+            'tip': 'Please ensure your file is a valid image (JPG, PNG, or WEBP).'
+        }
 
     arr = np.array(img, dtype=float)
     h, w, _ = arr.shape
 
     if h < 64 or w < 64:
-        return False, "Resolution too low for clinical diagnostic analysis."
+        return False, {
+            'detected_type': 'Low-Resolution Image',
+            'simple_reason': 'The image is too small to identify brain anatomical structures.',
+            'tip': 'Please upload a larger brain scan (recommended 128x128 or higher).'
+        }
 
     # 1. Color / Chromatic Divergence Check
     # Authentic clinical brain MRI scans are acquired as monochromatic grayscale modalities.
@@ -97,7 +110,11 @@ def verify_is_brain_mri(image_path):
     
     # Allow small tolerance (< 16.0) for minor JPEG compression / browser export tint
     if chroma_diff > 16.0:
-        return False, "Color data detected. Clinical brain MRI examinations are monochromatic grayscale scans, not color photographs or colored UI screenshots."
+        return False, {
+            'detected_type': 'Color Photo or Screenshot',
+            'simple_reason': 'This image contains color. Genuine brain MRI scans are black-and-white (grayscale).',
+            'tip': 'Please upload an authentic black-and-white brain MRI scan or choose a sample scan below.'
+        }
 
     # Convert to grayscale luminance
     gray = np.mean(arr, axis=2)
@@ -115,7 +132,11 @@ def verify_is_brain_mri(image_path):
     dark_border_ratio = np.mean(border_pixels < 45.0)
     # Documents, light screenshots, camera photos have bright borders (< 25% dark)
     if dark_border_ratio < 0.25:
-        return False, "Non-MRI image detected: Frame borders lack the characteristic dark air field of MRI scanner acquisitions."
+        return False, {
+            'detected_type': 'Document or Webpage Screenshot',
+            'simple_reason': 'The image background is bright. Genuine MRI scans always have a dark black background surrounding the brain.',
+            'tip': 'Please upload a scan that has the natural dark scanner background.'
+        }
 
     # 3. Central Tissue Contrast & Signal Presence
     # Center 50% must contain actual tissue with realistic soft-tissue contrast
@@ -124,16 +145,28 @@ def verify_is_brain_mri(image_path):
     center_std = float(np.std(center))
 
     if center_mean < 15.0 or center_std < 10.0:
-        return False, "Non-MRI image detected: Image is nearly blank or lacking internal anatomical soft-tissue contrast."
+        return False, {
+            'detected_type': 'Blank or Flat Image',
+            'simple_reason': 'The image is nearly completely black or lacks visible anatomical details.',
+            'tip': 'Please provide an MRI scan with clear cross-sectional brain tissue.'
+        }
     if center_mean > 230.0:
-        return False, "Non-MRI image detected: Overexposed or solid white background."
+        return False, {
+            'detected_type': 'Overexposed White Image',
+            'simple_reason': 'The image is solid white or washed out.',
+            'tip': 'Please upload a standard MRI scan with balanced contrast.'
+        }
 
     # 4. Cranial Tissue Coverage & Structural Topology
     tissue_mask = gray > 20.0
     tissue_ratio = float(np.mean(tissue_mask))
     
     if tissue_ratio < 0.08:
-        return False, "Non-MRI image detected: Insufficient anatomical foreground tissue."
+        return False, {
+            'detected_type': 'Non-Anatomical Image',
+            'simple_reason': 'No recognizable brain tissue was detected in this image.',
+            'tip': 'Please upload an axial head or brain scan.'
+        }
 
     # 5. Centroid Centering (Anatomical alignment)
     y_idx, x_idx = np.where(tissue_mask)
@@ -142,7 +175,11 @@ def verify_is_brain_mri(image_path):
         offset_y = abs(cy - h / 2) / h
         offset_x = abs(cx - w / 2) / w
         if offset_x > 0.32 or offset_y > 0.32:
-            return False, "Non-MRI image detected: Anatomical mass is severely off-center."
+            return False, {
+                'detected_type': 'Cropped or Off-Center Image',
+                'simple_reason': 'The subject is cut off or located far from the center of the frame.',
+                'tip': 'Please center the brain MRI scan in the image frame.'
+            }
 
     # 6. Gradient / Edge Directional Uniformity (Screenshots vs Natural Brain Anatomy)
     gx = np.abs(gray[:, 1:] - gray[:, :-1])
@@ -154,7 +191,11 @@ def verify_is_brain_mri(image_path):
     if sum_gx > 0 and sum_gy > 0:
         axis_ratio = max(sum_gx, sum_gy) / min(sum_gx, sum_gy)
         if axis_ratio > 3.0:
-            return False, "Non-MRI image detected: Artificial rectilinear edge patterns (e.g. text/code screenshot)."
+            return False, {
+                'detected_type': 'Code or UI Screenshot',
+                'simple_reason': 'Straight lines and text rows typical of a computer screen or code editor were detected.',
+                'tip': 'Please upload an MRI scan instead of a screenshot of your screen.'
+            }
 
     return True, None
 
@@ -314,13 +355,14 @@ def index():
                 )
 
             # Clinical Domain Validation Gate: Verify image is an authentic Brain MRI scan
-            is_valid_mri, rejection_reason = verify_is_brain_mri(file_location)
+            is_valid_mri, rejection_info = verify_is_brain_mri(file_location)
             if not is_valid_mri:
                 return render_template(
                     'index.html',
                     result=None,
                     is_non_mri=True,
-                    rejection_reason=rejection_reason,
+                    rejection_info=rejection_info,
+                    rejection_reason=rejection_info.get('simple_reason', 'Non-Brain MRI detected'),
                     file_path=f"/uploads/{unique_filename}",
                     sample_scans=SAMPLE_SCANS,
                     active_filename=clean_name
@@ -356,6 +398,11 @@ def index():
 @app.route('/uploads/<filename>')
 def get_uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+
+@app.route('/samples/<filename>')
+def get_sample_file(filename):
+    return send_from_directory(app.config['SAMPLE_FOLDER'], filename)
 
 
 if __name__ == '__main__':
