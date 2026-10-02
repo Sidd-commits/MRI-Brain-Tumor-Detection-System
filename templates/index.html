@@ -96,194 +96,6 @@
             pointer-events: none;
         }
 
-        /* Side HUD Floating Panels for Wide Desktop Viewports */
-        .side-hud {
-            position: fixed;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 5;
-            width: 210px;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .hud-left {
-            left: max(16px, calc(50% - 730px));
-        }
-
-        .hud-right {
-            right: max(16px, calc(50% - 730px));
-        }
-
-        @media (max-width: 1440px) {
-            .hud-left { left: 14px; width: 185px; }
-            .hud-right { right: 14px; width: 185px; }
-        }
-
-        @media (max-width: 1280px) {
-            .side-hud {
-                display: none !important;
-            }
-        }
-
-        .hud-panel {
-            background: rgba(13, 19, 33, 0.72);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 18px 16px;
-            backdrop-filter: blur(14px);
-            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        .hud-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.68rem;
-            font-weight: 700;
-            color: #818cf8;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .hud-tag.hud-tag-green {
-            color: #34d399;
-        }
-
-        .hud-pulse {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #818cf8;
-            box-shadow: 0 0 8px #818cf8;
-            animation: pulse-ring 2s infinite;
-        }
-
-        .hud-pulse.hud-pulse-green {
-            background: #10b981;
-            box-shadow: 0 0 8px #10b981;
-        }
-
-        .hud-title {
-            font-size: 0.76rem;
-            font-weight: 800;
-            color: #e2e8f0;
-            letter-spacing: 0.6px;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-        }
-
-        /* Animated EEG Wave SVG */
-        .hud-eeg-wrap {
-            height: 38px;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.35);
-            border-radius: 8px;
-            border: 1px solid rgba(99, 102, 241, 0.2);
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            margin-bottom: 14px;
-            position: relative;
-        }
-
-        .eeg-wave {
-            width: 200%;
-            height: 100%;
-            stroke: #818cf8;
-            stroke-width: 1.6;
-            fill: none;
-            stroke-dasharray: 400;
-            stroke-dashoffset: 400;
-            animation: eeg-sweep 3.5s linear infinite;
-        }
-
-        @keyframes eeg-sweep {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        /* Rotating Scanner Reticle */
-        .hud-scanner-reticle {
-            width: 76px;
-            height: 76px;
-            margin: 6px auto 14px;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .reticle-ring {
-            position: absolute;
-            border-radius: 50%;
-            box-sizing: border-box;
-        }
-
-        .ring-outer {
-            width: 100%;
-            height: 100%;
-            border: 1px dashed rgba(16, 185, 129, 0.45);
-            animation: spin 14s linear infinite;
-        }
-
-        .ring-inner {
-            width: 72%;
-            height: 72%;
-            border: 1px solid rgba(6, 182, 212, 0.45);
-            border-top-color: transparent;
-            border-bottom-color: transparent;
-            animation: spin-reverse 8s linear infinite;
-        }
-
-        .reticle-center {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.72rem;
-            font-weight: 700;
-            color: #34d399;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes spin-reverse {
-            from { transform: rotate(360deg); }
-            to { transform: rotate(0deg); }
-        }
-
-        .hud-metric-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 0.69rem;
-            padding: 4px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .hud-metric-row:last-child {
-            border-bottom: none;
-        }
-
-        .hud-metric-label {
-            color: #64748b;
-        }
-
-        .hud-metric-val {
-            color: #cbd5e1;
-            font-weight: 600;
-        }
-
-        .highlight-green {
-            color: #34d399;
-            font-weight: 700;
-        }
-
         .main-container {
             max-width: 960px;
             margin: 0 auto;
@@ -291,181 +103,295 @@
             z-index: 10;
         }
 
-        /* Header */
-        .app-header {
-            text-align: center;
-            margin-bottom: 35px;
+        /* Top Brand Navigation Bar */
+        .brand-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0 24px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+            margin-bottom: 32px;
         }
 
-        .badge-pill {
+        .brand-logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon-box {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.22) 0%, rgba(6, 182, 212, 0.18) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #818cf8;
+        }
+
+        .brand-title-wrap {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .brand-name {
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #f8fafc;
+        }
+
+        .brand-sub {
+            font-size: 0.76rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .brand-status {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 6px 16px;
-            background: rgba(99, 102, 241, 0.12);
-            border: 1px solid rgba(99, 102, 241, 0.3);
+            font-size: 0.8rem;
+            color: #94a3b8;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            padding: 6px 14px;
             border-radius: 9999px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: #a5b4fc;
-            margin-bottom: 16px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
         }
 
-        .badge-pill .pulse-dot {
-            width: 8px;
-            height: 8px;
+        .brand-status-dot {
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
             background: #10b981;
-            box-shadow: 0 0 10px #10b981;
-            animation: pulse-ring 2s infinite;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
         }
 
-        @keyframes pulse-ring {
-            0% { transform: scale(0.95); opacity: 0.8; }
-            50% { transform: scale(1.3); opacity: 1; }
-            100% { transform: scale(0.95); opacity: 0.8; }
+        /* Hero Header */
+        .app-header {
+            text-align: center;
+            margin-bottom: 34px;
         }
 
         h1.title {
-            font-size: 2.5rem;
+            font-size: 2.45rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #94a3b8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-            letter-spacing: -0.5px;
+            letter-spacing: -0.03em;
+            color: #ffffff;
+            margin-bottom: 12px;
+            line-height: 1.2;
         }
 
         .subtitle {
-            font-size: 1.05rem;
-            color: var(--text-muted);
-            max-width: 620px;
-            margin: 0 auto;
+            font-size: 1.02rem;
+            color: #94a3b8;
+            max-width: 640px;
+            margin: 0 auto 20px auto;
             line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .header-meta-strip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 7px 18px;
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 9999px;
+            font-size: 0.82rem;
+            color: #94a3b8;
+        }
+
+        .meta-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .meta-val-highlight {
+            color: #34d399;
+            font-weight: 700;
+        }
+
+        .meta-val-bold {
+            color: #f1f5f9;
+            font-weight: 600;
+        }
+
+        .meta-sep {
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 0.6rem;
         }
 
         /* Glassmorphism Cards */
         .glass-card {
-            background: var(--bg-card);
+            background: rgba(15, 23, 42, 0.75);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
             transition: all 0.3s ease;
         }
 
-        /* Quick Samples Bar */
+        /* Reference Test Cases */
         .samples-card {
-            padding: 20px 24px;
+            padding: 22px 24px;
             margin-bottom: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            background: rgba(17, 24, 39, 0.6);
         }
 
         .samples-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 16px;
         }
 
         .samples-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #94a3b8;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #f1f5f9;
             display: flex;
             align-items: center;
             gap: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: -0.01em;
+        }
+
+        .samples-subtitle {
+            font-size: 0.85rem;
+            color: #94a3b8 !important;
+            margin: 4px 0 0 0;
+            font-weight: 400;
+            display: block;
+        }
+
+        .samples-tag-badge {
+            font-size: 0.74rem;
+            font-weight: 600;
+            color: #a5b4fc;
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            padding: 4px 12px;
+            border-radius: 9999px;
+            letter-spacing: 0.3px;
         }
 
         .sample-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 12px;
         }
 
         .sample-btn {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.025);
             border: 1px solid rgba(255, 255, 255, 0.07);
             border-radius: 12px;
             padding: 12px 14px;
             color: #e2e8f0;
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 0.88rem;
-            font-weight: 500;
+            gap: 12px;
             text-align: left;
-            transition: all 0.2s ease;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             width: 100%;
         }
 
         .sample-btn:hover {
-            background: rgba(99, 102, 241, 0.12);
+            background: rgba(99, 102, 241, 0.1);
             border-color: rgba(99, 102, 241, 0.4);
             transform: translateY(-2px);
             color: #ffffff;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
         }
 
         .sample-btn.active {
             border-color: var(--accent-primary);
             background: rgba(99, 102, 241, 0.18);
+            box-shadow: 0 0 0 1px var(--accent-primary);
         }
 
-        .sample-btn span.sample-icon {
-            font-size: 1.25rem;
+        .sample-pill-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
         }
 
-        .sample-btn .sample-info small {
-            display: block;
-            font-size: 0.72rem;
+        .sample-pill-dot.glioma { background: #f59e0b; box-shadow: 0 0 8px rgba(245, 158, 11, 0.6); }
+        .sample-pill-dot.meningioma { background: #8b5cf6; box-shadow: 0 0 8px rgba(139, 92, 246, 0.6); }
+        .sample-pill-dot.pituitary { background: #ec4899; box-shadow: 0 0 8px rgba(236, 72, 153, 0.6); }
+        .sample-pill-dot.notumor { background: #10b981; box-shadow: 0 0 8px rgba(16, 185, 129, 0.6); }
+
+        .sample-info {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .sample-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #f8fafc;
+            line-height: 1.2;
+        }
+
+        .sample-tag {
+            font-size: 0.74rem;
             color: #94a3b8;
+            margin-top: 3px;
+            display: block;
         }
 
         /* Upload Area */
         .upload-card {
-            padding: 32px;
+            padding: 30px;
             margin-bottom: 30px;
         }
 
         .drop-zone {
-            border: 2px dashed rgba(99, 102, 241, 0.35);
+            border: 2px dashed rgba(99, 102, 241, 0.32);
             border-radius: 16px;
-            padding: 35px 20px;
+            padding: 38px 20px;
             text-align: center;
             background: rgba(99, 102, 241, 0.02);
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
             cursor: pointer;
             position: relative;
         }
 
         .drop-zone:hover, .drop-zone.drag-active {
             border-color: var(--accent-primary);
-            background: rgba(99, 102, 241, 0.08);
-            box-shadow: 0 0 25px var(--accent-glow);
+            background: rgba(99, 102, 241, 0.07);
+            box-shadow: 0 0 25px rgba(99, 102, 241, 0.2);
         }
 
         .drop-zone-icon {
-            width: 58px;
-            height: 58px;
-            margin: 0 auto 16px;
+            width: 52px;
+            height: 52px;
+            margin: 0 auto 14px;
             border-radius: 14px;
-            background: rgba(99, 102, 241, 0.15);
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid rgba(99, 102, 241, 0.25);
             display: flex;
             align-items: center;
             justify-content: center;
             color: #818cf8;
-            transition: transform 0.3s ease;
+            transition: transform 0.25s ease;
         }
 
         .drop-zone:hover .drop-zone-icon {
-            transform: scale(1.08);
+            transform: translateY(-2px);
         }
 
         .drop-zone-text {
@@ -1071,119 +997,81 @@
     <canvas id="neuralCanvas"></canvas>
     <div class="cyber-grid" aria-hidden="true"></div>
 
-    <!-- Left Cybernetic Neuroscience HUD Accent (Desktop) -->
-    <aside class="side-hud hud-left" aria-hidden="true">
-        <div class="hud-panel">
-            <div class="hud-tag">
-                <span class="hud-pulse"></span>
-                <span>NEURAL BUS ONLINE</span>
-            </div>
-            <div class="hud-title">CORTICAL MONITOR</div>
-            
-            <div class="hud-eeg-wrap">
-                <svg class="eeg-wave" viewBox="0 0 160 40">
-                    <path class="eeg-line" d="M0,20 L30,20 L35,8 L40,32 L45,14 L50,26 L55,20 L85,20 L90,6 L95,34 L100,10 L105,28 L110,20 L160,20" />
-                </svg>
-            </div>
-
-            <div class="hud-metrics">
-                <div class="hud-metric-row">
-                    <span class="hud-metric-label">ARCHITECTURE</span>
-                    <span class="hud-metric-val">VGG-16 DCNN</span>
-                </div>
-                <div class="hud-metric-row">
-                    <span class="hud-metric-label">KERNEL TENSOR</span>
-                    <span class="hud-metric-val">128x128x3</span>
-                </div>
-                <div class="hud-metric-row">
-                    <span class="hud-metric-label">ACTIVATION</span>
-                    <span class="hud-metric-val">Grad-CAM B5</span>
-                </div>
-                <div class="hud-metric-row">
-                    <span class="hud-metric-label">STREAM STATUS</span>
-                    <span class="hud-metric-val highlight-green">LIVE 60FPS</span>
-                </div>
-            </div>
-        </div>
-    </aside>
-
-    <!-- Right Cybernetic Scanner Telemetry HUD Accent (Desktop) -->
-    <aside class="side-hud hud-right" aria-hidden="true">
-        <div class="hud-panel">
-            <div class="hud-tag hud-tag-green">
-                <span class="hud-pulse hud-pulse-green"></span>
-                <span>BENCHMARK VERIFIED</span>
-            </div>
-            <div class="hud-title">DIAGNOSTIC TELEMETRY</div>
-
-            <div class="hud-scanner-reticle">
-                <div class="reticle-ring ring-outer"></div>
-                <div class="reticle-ring ring-inner"></div>
-                <span class="reticle-center">95.7%</span>
-            </div>
-
-            <div class="hud-metrics">
-                <div class="hud-metric-row">
-                    <span class="hud-metric-label">TEST ACCURACY</span>
-                    <span class="hud-metric-val highlight-green">95.73%</span>
-                </div>
-                <div class="hud-metric-row">
-                    <span class="hud-metric-label">TEST COHORT</span>
-                    <span class="hud-metric-val">1,311 SCANS</span>
-                </div>
-                <div class="hud-metric-row">
-                    <span class="hud-metric-label">DOMAIN GATE</span>
-                    <span class="hud-metric-val highlight-green">ARMED</span>
-                </div>
-                <div class="hud-metric-row">
-                    <span class="hud-metric-label">INFERENCE TIME</span>
-                    <span class="hud-metric-val">&lt; 180 ms</span>
-                </div>
-            </div>
-        </div>
-    </aside>
-
     <div class="main-container">
-        <!-- App Header -->
-        <header class="app-header">
-            <div class="badge-pill">
-                <span class="pulse-dot"></span>
-                <span>VGG16 Deep Learning System • 95.73% Accuracy</span>
+        <!-- Top Application Navigation Bar -->
+        <nav class="brand-nav">
+            <div class="brand-logo-area">
+                <div class="brand-icon-box">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.5 7.5a.5.5 0 0 1 0 1H9.707l1.147 1.146a.5.5 0 0 1-.708.708L8.5 8.707v2.793a.5.5 0 0 1-1 0V8.707L5.854 10.354a.5.5 0 1 1-.708-.708L6.293 8.5H4.5a.5.5 0 0 1 0-1h1.793L5.146 6.354a.5.5 0 1 1 .708-.708L7.5 7.293V4.5a.5.5 0 0 1 1 0v2.793l1.646-1.647a.5.5 0 0 1 .708.708L9.707 7.5H11.5z"/>
+                    </svg>
+                </div>
+                <div class="brand-title-wrap">
+                    <span class="brand-name">NeuroScan</span>
+                    <span class="brand-sub">Clinical AI</span>
+                </div>
             </div>
-            <h1 class="title">MRI Brain Tumor Detection</h1>
-            <p class="subtitle">AI-assisted diagnosis & convolutional activation explainability (Grad-CAM) across 4 neuro-oncology classes.</p>
+            <div class="brand-status">
+                <span class="brand-status-dot"></span>
+                <span>VGG-16 Model Active</span>
+            </div>
+        </nav>
+
+        <!-- Main Header -->
+        <header class="app-header">
+            <h1 class="title">Brain MRI Diagnostic Analysis</h1>
+            <p class="subtitle">Deep convolutional neural classification across 4 pathology cohorts with localized spatial Grad-CAM activation mapping.</p>
+            <div class="header-meta-strip">
+                <div class="meta-item">
+                    <span>Architecture:</span>
+                    <span class="meta-val-bold">VGG-16 DCNN</span>
+                </div>
+                <div class="meta-sep">&bull;</div>
+                <div class="meta-item">
+                    <span>Test Accuracy:</span>
+                    <span class="meta-val-highlight">95.73%</span>
+                </div>
+                <div class="meta-sep">&bull;</div>
+                <div class="meta-item">
+                    <span>Explainability:</span>
+                    <span class="meta-val-bold">Grad-CAM (Block 5)</span>
+                </div>
+            </div>
         </header>
 
         {% if error_message %}
         <div class="custom-alert">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
                 <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
             </svg>
             <div><strong>Notice:</strong> {{ error_message }}</div>
         </div>
         {% endif %}
 
-        <!-- Quick-Test Sample Scans for Live Presentation Demonstration -->
+        <!-- Quick Reference Test Cases -->
         {% if sample_scans %}
         <div class="glass-card samples-card">
             <div class="samples-header">
-                <div class="samples-title">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M5.5 0a.5.5 0 0 1 .5.5v4A1.5 1.5 0 0 1 4.5 6h-4A.5.5 0 0 1 0 5.5v-5A.5.5 0 0 1 .5 0h5zm-1 1H1v3.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V1zm6.5-.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5v-5zm1 1v3.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V1h-3.5zM0 10.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5v-5zm1 1v3.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V11H1zm9.5-.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5v-5zm1 1v3.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V11h-3.5z"/>
-                    </svg>
-                    <span>1-Click Test Scans (Instant Panel Demo)</span>
+                <div>
+                    <div class="samples-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M5.5 0a.5.5 0 0 1 .5.5v4A1.5 1.5 0 0 1 4.5 6h-4A.5.5 0 0 1 0 5.5v-5A.5.5 0 0 1 .5 0h5zm-1 1H1v3.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V1zm6.5-.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5v-5zm1 1v3.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V1h-3.5zM0 10.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5v-5zm1 1v3.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V11H1zm9.5-.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5v-5zm1 1v3.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V11h-3.5z"/>
+                        </svg>
+                        <span>Reference Test Cases</span>
+                    </div>
+                    <p class="samples-subtitle">Select a benchmarked scan to evaluate model classification instantly:</p>
                 </div>
-                <small class="text-muted">Click to analyze sample scan</small>
+                <span class="samples-tag-badge">4 Validated Cohorts</span>
             </div>
             <form method="POST" id="sampleForm">
                 <input type="hidden" name="sample_choice" id="sampleChoiceInput">
                 <div class="sample-grid">
                     {% for s in sample_scans %}
                     <button type="button" class="sample-btn {% if active_filename == s.filename %}active{% endif %}" onclick="submitSample('{{ s.filename }}')">
-                        <span class="sample-icon">{{ s.icon }}</span>
+                        <div class="sample-pill-dot {{ s.type }}"></div>
                         <div class="sample-info">
-                            <div>{{ s.name }}</div>
-                            <small>{{ s.filename }}</small>
+                            <div class="sample-name">{{ s.name }}</div>
+                            <span class="sample-tag">{{ s.tag }}</span>
                         </div>
                     </button>
                     {% endfor %}
@@ -1197,13 +1085,13 @@
             <form method="POST" enctype="multipart/form-data" id="uploadForm">
                 <div class="drop-zone" id="dropZone">
                     <div class="drop-zone-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" viewBox="0 0 16 16">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
                             <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
                             <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
                         </svg>
                     </div>
                     <div class="drop-zone-text">Drag & drop brain MRI scan here</div>
-                    <div class="drop-zone-subtext">or click to browse from device (JPG, PNG, WEBP)</div>
+                    <div class="drop-zone-subtext">or click to browse from device (JPG, PNG, WEBP &bull; Max 16 MB)</div>
                     <input type="file" id="fileInput" name="file" accept="image/*">
                 </div>
 
@@ -1220,11 +1108,11 @@
                 </div>
 
                 <button type="submit" class="btn-analyze" id="btnAnalyze">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
                         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
                         <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
                     </svg>
-                    <span>Execute Neural Diagnostic Analysis</span>
+                    <span>Analyze MRI Scan</span>
                 </button>
             </form>
         </div>
@@ -1311,16 +1199,16 @@
                             <span class="rejection-chips-label">Try an instant scan:</span>
                             <div class="rejection-chips">
                                 <button type="button" class="rejection-chip-btn" onclick="submitSample('Te-gl_0015.jpg')">
-                                    <span>🧠</span> Glioma Sample
+                                    Glioma Case
                                 </button>
                                 <button type="button" class="rejection-chip-btn" onclick="submitSample('Te-meTr_0001.jpg')">
-                                    <span>🔬</span> Meningioma Sample
+                                    Meningioma Case
                                 </button>
                                 <button type="button" class="rejection-chip-btn" onclick="submitSample('Te-piTr_0003.jpg')">
-                                    <span>⚡</span> Pituitary Sample
+                                    Pituitary Case
                                 </button>
                                 <button type="button" class="rejection-chip-btn" onclick="submitSample('Te-noTr_0004.jpg')">
-                                    <span>🛡️</span> Healthy Brain
+                                    Healthy Control
                                 </button>
                             </div>
                         </div>

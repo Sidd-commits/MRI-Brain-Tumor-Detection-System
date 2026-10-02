@@ -37,12 +37,12 @@ DISPLAY_NAMES = {
     'meningioma': 'Meningioma'
 }
 
-# Pre-defined sample scans for quick live panel demonstration
+# Pre-defined reference scans for validated diagnostic testing
 SAMPLE_SCANS = [
-    {'name': 'Glioma Scan', 'type': 'glioma', 'filename': 'Te-gl_0015.jpg', 'icon': '🧠'},
-    {'name': 'Meningioma Scan', 'type': 'meningioma', 'filename': 'Te-meTr_0001.jpg', 'icon': '🔬'},
-    {'name': 'Pituitary Scan', 'type': 'pituitary', 'filename': 'Te-piTr_0003.jpg', 'icon': '⚡'},
-    {'name': 'Healthy (No Tumor)', 'type': 'notumor', 'filename': 'Te-noTr_0004.jpg', 'icon': '🛡️'}
+    {'name': 'Glioma Case', 'type': 'glioma', 'filename': 'Te-gl_0015.jpg', 'tag': 'Astrocytoma / GBM'},
+    {'name': 'Meningioma Case', 'type': 'meningioma', 'filename': 'Te-meTr_0001.jpg', 'tag': 'Dural Base Mass'},
+    {'name': 'Pituitary Case', 'type': 'pituitary', 'filename': 'Te-piTr_0003.jpg', 'tag': 'Sellar Region'},
+    {'name': 'Healthy Control', 'type': 'notumor', 'filename': 'Te-noTr_0004.jpg', 'tag': 'No Tumor Detected'}
 ]
 
 # Build Grad-CAM computation sub-models for convolutional explainability
