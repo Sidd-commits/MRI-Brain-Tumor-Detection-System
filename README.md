@@ -14,7 +14,7 @@ A deep learning project that classifies brain MRI scans into four categories —
 - **Multi-class probability distribution:** Softmax percentage breakdown across all 4 categories
 - **1-Click live presentation samples:** Instantly test Glioma, Meningioma, Pituitary, and Normal scans without file dialogs
 - **Clinical information cards:** Pathology stats, histological grades, and clinical management profiles
-- **Drag-and-drop & live preview:** Seamless image upload with instant client preview
+- **Clinical Domain Validation Gate:** Out-of-Distribution (OOD) protection that intercepts and rejects non-MRI images, screenshots, everyday photos, and documents to eliminate false positive cancer diagnoses
 - **Robust Flask web backend:** Sanitized filenames, file validation, error handling, and memory safeguards
 
 ---

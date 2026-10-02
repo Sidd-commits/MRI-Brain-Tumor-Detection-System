@@ -67,6 +67,98 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+def verify_is_brain_mri(image_path):
+    """
+    Clinical Domain Validation Gate for Brain MRI Scans.
+    Rejects:
+      - Color images (photos of people, objects, animals, landscapes, UI screenshots)
+      - Document scans, charts, and text pages
+      - Computer screenshots (code, browser windows, desktop)
+      - Blank, solid, or uniform noise images
+      - Non-cranial objects
+    Returns: (is_valid: bool, rejection_reason: str or None)
+    """
+    try:
+        with Image.open(image_path) as raw_img:
+            img = raw_img.convert('RGB')
+    except Exception:
+        return False, "Unreadable or corrupted image file."
+
+    arr = np.array(img, dtype=float)
+    h, w, _ = arr.shape
+
+    if h < 64 or w < 64:
+        return False, "Resolution too low for clinical diagnostic analysis."
+
+    # 1. Color / Chromatic Divergence Check
+    # Authentic clinical brain MRI scans are acquired as monochromatic grayscale modalities.
+    r, g, b = arr[:, :, 0], arr[:, :, 1], arr[:, :, 2]
+    chroma_diff = np.mean(np.abs(r - g) + np.abs(g - b) + np.abs(r - b))
+    
+    # Allow small tolerance (< 16.0) for minor JPEG compression / browser export tint
+    if chroma_diff > 16.0:
+        return False, "Color data detected. Clinical brain MRI examinations are monochromatic grayscale scans, not color photographs or colored UI screenshots."
+
+    # Convert to grayscale luminance
+    gray = np.mean(arr, axis=2)
+
+    # 2. Ambient Air / Perimeter Background Check
+    # Axial brain MRIs are centered inside scanner bore; outer edges are ambient dark air (< 45).
+    # Take a 5% margin around the frame perimeter.
+    m_h, m_w = max(2, int(h * 0.05)), max(2, int(w * 0.05))
+    top_edge = gray[:m_h, :]
+    bottom_edge = gray[-m_h:, :]
+    left_edge = gray[:, :m_w]
+    right_edge = gray[:, -m_w:]
+    border_pixels = np.concatenate([top_edge.flatten(), bottom_edge.flatten(), left_edge.flatten(), right_edge.flatten()])
+    
+    dark_border_ratio = np.mean(border_pixels < 45.0)
+    # Documents, light screenshots, camera photos have bright borders (< 25% dark)
+    if dark_border_ratio < 0.25:
+        return False, "Non-MRI image detected: Frame borders lack the characteristic dark air field of MRI scanner acquisitions."
+
+    # 3. Central Tissue Contrast & Signal Presence
+    # Center 50% must contain actual tissue with realistic soft-tissue contrast
+    center = gray[h // 4 : 3 * h // 4, w // 4 : 3 * w // 4]
+    center_mean = float(np.mean(center))
+    center_std = float(np.std(center))
+
+    if center_mean < 15.0 or center_std < 10.0:
+        return False, "Non-MRI image detected: Image is nearly blank or lacking internal anatomical soft-tissue contrast."
+    if center_mean > 230.0:
+        return False, "Non-MRI image detected: Overexposed or solid white background."
+
+    # 4. Cranial Tissue Coverage & Structural Topology
+    tissue_mask = gray > 20.0
+    tissue_ratio = float(np.mean(tissue_mask))
+    
+    if tissue_ratio < 0.08:
+        return False, "Non-MRI image detected: Insufficient anatomical foreground tissue."
+
+    # 5. Centroid Centering (Anatomical alignment)
+    y_idx, x_idx = np.where(tissue_mask)
+    if len(y_idx) > 0:
+        cy, cx = float(np.mean(y_idx)), float(np.mean(x_idx))
+        offset_y = abs(cy - h / 2) / h
+        offset_x = abs(cx - w / 2) / w
+        if offset_x > 0.32 or offset_y > 0.32:
+            return False, "Non-MRI image detected: Anatomical mass is severely off-center."
+
+    # 6. Gradient / Edge Directional Uniformity (Screenshots vs Natural Brain Anatomy)
+    gx = np.abs(gray[:, 1:] - gray[:, :-1])
+    gy = np.abs(gray[1:, :] - gray[:-1, :])
+    min_h, min_w = min(gx.shape[0], gy.shape[0]), min(gx.shape[1], gy.shape[1])
+    gx, gy = gx[:min_h, :min_w], gy[:min_h, :min_w]
+    
+    sum_gx, sum_gy = np.sum(gx), np.sum(gy)
+    if sum_gx > 0 and sum_gy > 0:
+        axis_ratio = max(sum_gx, sum_gy) / min(sum_gx, sum_gy)
+        if axis_ratio > 3.0:
+            return False, "Non-MRI image detected: Artificial rectilinear edge patterns (e.g. text/code screenshot)."
+
+    return True, None
+
+
 def generate_gradcam_overlay(image_path, output_path):
     """Generates a Grad-CAM heatmap overlaid on the MRI scan."""
     if not GRADCAM_SUPPORTED:
@@ -219,6 +311,19 @@ def index():
                     result=None,
                     error_message="The uploaded file is not a valid image scan. Please provide a genuine MRI image.",
                     sample_scans=SAMPLE_SCANS
+                )
+
+            # Clinical Domain Validation Gate: Verify image is an authentic Brain MRI scan
+            is_valid_mri, rejection_reason = verify_is_brain_mri(file_location)
+            if not is_valid_mri:
+                return render_template(
+                    'index.html',
+                    result=None,
+                    is_non_mri=True,
+                    rejection_reason=rejection_reason,
+                    file_path=f"/uploads/{unique_filename}",
+                    sample_scans=SAMPLE_SCANS,
+                    active_filename=clean_name
                 )
 
             # Perform prediction

@@ -700,6 +700,39 @@
             </form>
         </div>
 
+        {% if is_non_mri %}
+        <!-- Domain Validation Rejection Card -->
+        <section class="results-section" id="rejectionSection">
+            <div class="glass-card" style="padding: 30px; border: 1px solid rgba(239, 68, 68, 0.4); background: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(185, 28, 28, 0.05) 100%); margin-bottom: 24px;">
+                <div style="display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap;">
+                    <div style="width: 58px; height: 58px; border-radius: 16px; background: rgba(239, 68, 68, 0.2); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: #f87171; flex-shrink: 0;">
+                        ⚠️
+                    </div>
+                    <div style="flex: 1; min-width: 260px;">
+                        <div style="display: inline-block; padding: 4px 12px; background: rgba(239, 68, 68, 0.25); border-radius: 9999px; font-size: 0.75rem; font-weight: 700; color: #fca5a5; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+                            Clinical Domain Gate Activated
+                        </div>
+                        <h2 style="font-size: 1.45rem; font-weight: 800; color: #fef2f2; margin-bottom: 10px;">
+                            Input Rejected: Non-Brain MRI Image Detected
+                        </h2>
+                        <div style="padding: 12px 16px; background: rgba(0, 0, 0, 0.4); border-left: 3px solid #ef4444; border-radius: 8px; font-size: 0.9rem; color: #fecaca; margin-bottom: 15px;">
+                            <strong>Gate Rejection Reason:</strong> {{ rejection_reason }}
+                        </div>
+                        <p style="font-size: 0.88rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 0;">
+                            <strong>Diagnostic Integrity Protection:</strong> To prevent artificial hallucinations and erroneous tumor diagnoses, this system rejects everyday photographs, UI screenshots, documents, and non-cranial objects. Please upload an authentic axial brain MRI examination or try the 1-click test scans above.
+                        </p>
+                    </div>
+                    {% if file_path %}
+                    <div style="width: 130px; text-align: center; flex-shrink: 0;">
+                        <div style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; margin-bottom: 6px;">Uploaded Input</div>
+                        <img src="{{ file_path }}" alt="Rejected Input" style="width: 120px; height: 120px; object-fit: cover; border-radius: 10px; border: 1px solid rgba(239, 68, 68, 0.3);">
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
         {% if result %}
         <!-- Diagnostic Results Section -->
         <section class="results-section" id="resultsSection">
@@ -960,11 +993,11 @@
             btnAnalyze.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Running VGG16 Inference & Grad-CAM...';
         });
 
-        // Auto-scroll to results if present
+        // Auto-scroll to results or rejection card if present
         window.addEventListener('DOMContentLoaded', () => {
-            const resultsSection = document.getElementById('resultsSection');
-            if (resultsSection) {
-                resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const target = document.getElementById('resultsSection') || document.getElementById('rejectionSection');
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         });
     </script>

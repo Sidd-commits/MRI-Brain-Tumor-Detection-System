@@ -41,6 +41,7 @@ MRI Images/
 
 # Model weights (>100MB exceeds standard GitHub file limits)
 models/*.h5
+models/*.keras
 
 # OS generated files
 .DS_Store
