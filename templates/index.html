@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeuroScan | Brain MRI Pathology Diagnostic Suite</title>
+    <title>NeuroScan | Brain MRI Tumor Detection & Analysis</title>
     <!-- Core UI Framework & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -114,20 +114,20 @@
         }
 
         .workstation-container {
-            max-width: 1240px;
+            max-width: 1200px;
             margin: 0 auto;
             position: relative;
             z-index: 10;
         }
 
         /* ========================================================
-           Production-Grade Top Navigation Bar (Authentic & Professional)
+           Minimalist Top Navigation Bar (Clean & Purposeful)
            ======================================================== */
         .brand-navbar {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 20px;
+            padding: 14px 20px;
             background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
@@ -176,105 +176,35 @@
         }
 
         .brand-tagline {
-            font-size: 0.76rem;
+            font-size: 0.78rem;
             color: var(--text-muted);
             letter-spacing: 0.01em;
             font-weight: 500;
         }
 
-        /* Center Navigation Links */
-        .navbar-nav-links {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        @media (max-width: 860px) {
-            .navbar-nav-links {
-                display: none;
-            }
-        }
-
-        .nav-link-item {
-            color: #94a3b8;
-            font-size: 0.82rem;
-            font-weight: 500;
-            padding: 6px 12px;
-            border-radius: 7px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            transition: all 0.18s ease;
-        }
-
-        .nav-link-item:hover {
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .nav-link-item.active {
-            color: #f8fafc;
-            background: rgba(255, 255, 255, 0.07);
-            font-weight: 600;
-        }
-
-        /* Right Telemetry & Status */
-        .navbar-status-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .engine-status-badge {
+        .brand-model-pill {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: rgba(16, 185, 129, 0.08);
-            border: 1px solid rgba(16, 185, 129, 0.25);
-            padding: 5px 12px;
-            border-radius: 7px;
-            font-size: 0.78rem;
+            font-size: 0.8rem;
+            color: #94a3b8;
             font-weight: 500;
-            color: #a7f3d0;
+            background: rgba(255, 255, 255, 0.035);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 5px 12px;
+            border-radius: 6px;
         }
 
-        .engine-dot {
+        .brand-pulse-dot {
             width: 7px;
             height: 7px;
             border-radius: 50%;
             background: #10b981;
             box-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
-            animation: pulse-dot 2s infinite ease-in-out;
-        }
-
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.45; transform: scale(0.85); }
-        }
-
-        .regulatory-tag {
-            font-size: 0.7rem;
-            font-weight: 600;
-            letter-spacing: 0.04em;
-            color: #94a3b8;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 5px 10px;
-            border-radius: 6px;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        @media (max-width: 600px) {
-            .regulatory-tag {
-                display: none;
-            }
         }
 
         /* ========================================================
-           Hero Title Section (Dignified & High-Contrast)
+           Hero Title Section (Direct, Clean & Human)
            ======================================================== */
         .workspace-hero {
             text-align: center;
@@ -294,50 +224,10 @@
         .hero-lead {
             font-size: 0.98rem;
             color: var(--text-muted);
-            max-width: 680px;
-            margin: 0 auto 18px;
+            max-width: 660px;
+            margin: 0 auto;
             line-height: 1.55;
             font-weight: 400;
-        }
-
-        .clinical-meta-ribbon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            padding: 6px 16px;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid var(--border-hairline);
-            border-radius: 9px;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .meta-entry {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .meta-entry i {
-            color: #818cf8;
-            font-size: 0.85rem;
-        }
-
-        .meta-val-highlight {
-            color: #34d399;
-            font-weight: 600;
-        }
-
-        .meta-val-white {
-            color: #f1f5f9;
-            font-weight: 600;
-        }
-
-        .meta-divider {
-            color: rgba(255, 255, 255, 0.15);
-            font-size: 0.65rem;
         }
 
         /* ========================================================
@@ -841,7 +731,6 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            margin-bottom: 18px;
         }
 
         .hallmark-row {
@@ -859,37 +748,6 @@
             font-weight: 600;
             color: #ffffff;
             margin-right: 4px;
-        }
-
-        .explorer-footer-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-top: 12px;
-            border-top: 1px solid rgba(255, 255, 255, 0.07);
-            font-size: 0.76rem;
-            color: var(--text-muted);
-        }
-
-        .btn-copy-findings {
-            background: rgba(99, 102, 241, 0.1);
-            border: 1px solid rgba(99, 102, 241, 0.25);
-            color: #a5b4fc;
-            padding: 5px 11px;
-            border-radius: 7px;
-            font-size: 0.76rem;
-            font-weight: 500;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.18s ease;
-        }
-
-        .btn-copy-findings:hover {
-            background: rgba(99, 102, 241, 0.18);
-            border-color: var(--accent-indigo);
-            color: #ffffff;
         }
 
         /* ========================================================
@@ -1338,34 +1196,6 @@
             color: #ffffff;
         }
 
-        /* Toast Alert */
-        .toast-popup {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: #1e1b4b;
-            border: 1px solid #6366f1;
-            color: #ffffff;
-            padding: 12px 18px;
-            border-radius: 10px;
-            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
-            display: flex;
-            align-items: center;
-            gap: 9px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            z-index: 9999;
-            transform: translateY(80px);
-            opacity: 0;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            pointer-events: none;
-        }
-
-        .toast-popup.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
         /* Footer */
         .footer-note {
             text-align: center;
@@ -1386,71 +1216,348 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Print Media Styles for Hospital Clinical Letterhead */
+        /* ========================================================
+           PUBLICATION-GRADE PRINT & EXPORT PDF REPORT STYLES
+           ======================================================== */
         @media print {
-            body {
-                background: #ffffff !important;
-                color: #000000 !important;
-                padding: 0 !important;
+            @page {
+                size: A4 portrait;
+                margin: 12mm 15mm 12mm 15mm;
             }
 
-            #neuralCanvas, .cyber-grid, .brand-navbar, .ingestion-card, .benchmark-card, .btn-action-primary, .btn-action-secondary, .btn-execute-analysis, .rejection-action-bar, .toast-popup {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+                box-shadow: none !important;
+                text-shadow: none !important;
+            }
+
+            body {
+                background: #ffffff !important;
+                color: #0f172a !important;
+                font-family: var(--font-sans) !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                font-size: 10.5pt !important;
+                line-height: 1.4 !important;
+            }
+
+            /* Completely hide non-report UI & interactive chrome */
+            #neuralCanvas,
+            .cyber-grid,
+            .brand-navbar,
+            .workspace-hero,
+            .console-column,
+            .clinical-action-bar,
+            .rejection-card,
+            .rejection-action-bar,
+            .pathology-tabs-row,
+            .footer-note,
+            .panel-chip,
+            .btn-remove-scan,
+            button {
                 display: none !important;
             }
 
             .workstation-container {
                 max-width: 100% !important;
+                width: 100% !important;
                 margin: 0 !important;
+                padding: 0 !important;
             }
 
+            /* Clean Hospital Letterhead */
             .print-letterhead {
                 display: block !important;
-                border-bottom: 2px solid #000000;
-                padding-bottom: 12px;
-                margin-bottom: 18px;
+                margin-bottom: 16px !important;
             }
 
-            .glass-panel {
-                background: #ffffff !important;
-                border: 1px solid #dddddd !important;
-                box-shadow: none !important;
-                color: #000000 !important;
+            .print-header-top {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: flex-start !important;
             }
 
+            .print-brand-title {
+                font-family: var(--font-display) !important;
+                font-size: 1.4rem !important;
+                font-weight: 800 !important;
+                color: #0f172a !important;
+                letter-spacing: -0.02em !important;
+                line-height: 1.2 !important;
+            }
+
+            .print-brand-subtitle {
+                font-size: 0.85rem !important;
+                color: #475569 !important;
+                margin-top: 3px !important;
+            }
+
+            .print-meta-table {
+                text-align: right !important;
+                font-size: 0.78rem !important;
+                color: #334155 !important;
+                line-height: 1.5 !important;
+            }
+
+            .print-meta-table strong {
+                color: #0f172a !important;
+            }
+
+            .print-divider-line {
+                border-bottom: 2px solid #0f172a !important;
+                margin-top: 10px !important;
+                margin-bottom: 16px !important;
+            }
+
+            /* Diagnostic Outcome Banner in Print */
             .diagnosis-banner {
-                background: #f8f9fa !important;
-                border: 1px solid #000000 !important;
-                color: #000000 !important;
+                background: #f8fafc !important;
+                border: 1.5px solid #cbd5e1 !important;
+                border-radius: 8px !important;
+                padding: 12px 16px !important;
+                margin-bottom: 14px !important;
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                color: #0f172a !important;
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
             }
 
             .diagnosis-title {
-                color: #000000 !important;
+                color: #0f172a !important;
+                font-size: 1.3rem !important;
+                font-weight: 800 !important;
+            }
+
+            .diagnosis-title.notumor { color: #047857 !important; }
+            .diagnosis-title.tumor { color: #b45309 !important; }
+
+            .banner-metrics {
+                display: flex !important;
+                align-items: center !important;
+                gap: 8px !important;
+            }
+
+            .certainty-badge {
+                background: #ffffff !important;
+                border: 1px solid #cbd5e1 !important;
+                color: #0f172a !important;
+                font-size: 0.9rem !important;
+                padding: 5px 12px !important;
+            }
+
+            .certainty-badge strong {
+                color: #047857 !important;
+            }
+
+            .urgency-indicator.urgent {
+                background: #fee2e2 !important;
+                border: 1px solid #f87171 !important;
+                color: #991b1b !important;
+            }
+
+            .urgency-indicator.benign {
+                background: #d1fae5 !important;
+                border: 1px solid #34d399 !important;
+                color: #065f46 !important;
+            }
+
+            /* Side-by-Side Images in Print */
+            .images-grid {
+                display: flex !important;
+                flex-direction: row !important;
+                gap: 14px !important;
+                margin-bottom: 14px !important;
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
             }
 
             .image-panel {
-                border: 1px solid #cccccc !important;
+                flex: 1 !important;
+                width: 50% !important;
                 background: #ffffff !important;
+                border: 1px solid #cbd5e1 !important;
+                border-radius: 8px !important;
+                overflow: hidden !important;
             }
 
             .image-panel-header {
-                color: #000000 !important;
                 background: #f1f5f9 !important;
+                color: #1e293b !important;
+                font-weight: 700 !important;
+                font-size: 0.78rem !important;
+                padding: 8px 12px !important;
+                border-bottom: 1px solid #cbd5e1 !important;
             }
 
-            .hallmark-row {
-                background: #f8fafc !important;
+            .image-panel-header .badge {
+                background: #e2e8f0 !important;
+                color: #334155 !important;
+                border: 1px solid #cbd5e1 !important;
+            }
+
+            .image-panel-body {
+                background: #ffffff !important;
+                padding: 10px !important;
+                text-align: center !important;
+            }
+
+            .image-panel img {
+                max-height: 220px !important;
+                object-fit: contain !important;
                 border: 1px solid #e2e8f0 !important;
-                color: #000000 !important;
+                border-radius: 4px !important;
+            }
+
+            /* Probabilities Distribution Table in Print */
+            .probabilities-card {
+                background: #f8fafc !important;
+                border: 1px solid #cbd5e1 !important;
+                border-radius: 8px !important;
+                padding: 12px 16px !important;
+                margin-bottom: 14px !important;
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+            }
+
+            .prob-header-row {
+                color: #0f172a !important;
+                font-size: 0.85rem !important;
+                font-weight: 700 !important;
+                margin-bottom: 8px !important;
+            }
+
+            .prob-label-row {
+                color: #1e293b !important;
+                font-size: 0.8rem !important;
+                font-weight: 600 !important;
+            }
+
+            .prob-track {
+                background: #e2e8f0 !important;
+                border: 1px solid #cbd5e1 !important;
+                height: 7px !important;
+            }
+
+            .prob-fill {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .fill-glioma { background: #d97706 !important; }
+            .fill-notumor { background: #059669 !important; }
+            .fill-pituitary { background: #db2777 !important; }
+            .fill-meningioma { background: #9333ea !important; }
+
+            /* Clinical Pathology Section in Print */
+            .workspace-grid {
+                display: block !important;
+                margin-bottom: 14px !important;
+            }
+
+            .workstation-column {
+                width: 100% !important;
+            }
+
+            .pathology-workstation-panel {
+                background: #f8fafc !important;
+                border: 1px solid #cbd5e1 !important;
+                border-radius: 8px !important;
+                padding: 12px 16px !important;
+                margin-bottom: 14px !important;
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+            }
+
+            .explorer-main-title {
+                color: #0f172a !important;
+                font-size: 0.98rem !important;
+            }
+
+            .explorer-sub-title {
+                color: #475569 !important;
+            }
+
+            .pathology-narrative {
+                color: #334155 !important;
+                font-size: 0.82rem !important;
+                line-height: 1.45 !important;
+            }
+
+            .clinical-metrics-grid {
+                display: flex !important;
+                gap: 8px !important;
+                margin-bottom: 10px !important;
             }
 
             .metric-box {
-                background: #f8fafc !important;
+                flex: 1 !important;
+                background: #ffffff !important;
+                border: 1px solid #cbd5e1 !important;
+                border-radius: 6px !important;
+                padding: 6px !important;
+            }
+
+            .metric-val {
+                color: #0f172a !important;
+                font-size: 1.05rem !important;
+                font-weight: 800 !important;
+            }
+
+            .metric-label {
+                color: #475569 !important;
+                font-size: 0.65rem !important;
+            }
+
+            .hallmark-row {
+                background: #ffffff !important;
                 border: 1px solid #e2e8f0 !important;
-                color: #000000 !important;
+                border-left: 3px solid #6366f1 !important;
+                color: #1e293b !important;
+                font-size: 0.78rem !important;
+                padding: 6px 9px !important;
+                margin-bottom: 6px !important;
+            }
+
+            .hallmark-key {
+                color: #0f172a !important;
+                font-weight: 700 !important;
+            }
+
+            /* Physician Attestation & Signoff Block */
+            .print-signoff-block {
+                display: block !important;
+                margin-top: 18px !important;
+                padding-top: 12px !important;
+                border-top: 1px solid #cbd5e1 !important;
+                font-size: 0.78rem !important;
+                color: #475569 !important;
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+            }
+
+            .signoff-row {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: flex-end !important;
+                margin-top: 24px !important;
+                color: #0f172a !important;
+                font-size: 0.8rem !important;
+            }
+
+            .signoff-line {
+                border-bottom: 1px solid #334155 !important;
+                width: 200px !important;
+                display: inline-block !important;
+                margin-left: 6px !important;
             }
         }
 
-        .print-letterhead {
+        .print-letterhead,
+        .print-signoff-block {
             display: none;
         }
     </style>
@@ -1462,20 +1569,23 @@
 
     <!-- Clean Hospital Letterhead for Print/Export -->
     <div class="print-letterhead">
-        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+        <div class="print-header-top">
             <div>
-                <h2 style="font-size: 1.5rem; font-weight: 800; margin: 0; font-family: 'Manrope', sans-serif;">NEUROSCAN AI &bull; CLINICAL RADIOLOGY REPORT</h2>
-                <p style="font-size: 0.82rem; color: #475569; margin: 2px 0 0 0;">Department of Neuroradiology & Neuro-Oncology Diagnostic Suite</p>
+                <div class="print-brand-title">NEUROSCAN CLINICAL REPORT</div>
+                <div class="print-brand-subtitle">Automated Brain MRI Tumor Classification & Grad-CAM Localization</div>
             </div>
-            <div style="text-align: right; font-size: 0.78rem;">
-                <div>REPORT DATE: <span id="printDate"></span></div>
-                <div>EXAM CODE: #NC-{{ active_filename if active_filename else 'DIRECT-SCAN' }}</div>
+            <div class="print-meta-table">
+                <div><strong>Report Date:</strong> <span id="printDate"></span></div>
+                <div><strong>Accession No:</strong> #NC-{{ active_filename if active_filename else 'DIRECT-SCAN' }}</div>
+                <div><strong>Modality:</strong> Cranial MRI &bull; Axial View</div>
+                <div><strong>Model:</strong> VGG-16 Deep CNN</div>
             </div>
         </div>
+        <div class="print-divider-line"></div>
     </div>
 
     <div class="workstation-container">
-        <!-- Top Production Clinical Navigation Bar -->
+        <!-- Minimalist Top Navigation Bar -->
         <nav class="brand-navbar">
             <div class="brand-identity-group">
                 <div class="brand-emblem">
@@ -1483,68 +1593,19 @@
                 </div>
                 <div class="brand-text-block">
                     <div class="brand-name">NeuroScan<span class="brand-dot">.</span></div>
-                    <span class="brand-tagline">Neuroradiological Diagnostic Suite</span>
+                    <span class="brand-tagline">MRI Brain Tumor Detection & Clinical Explainability</span>
                 </div>
             </div>
-
-            <!-- Authentic Center Workspace Links -->
-            <div class="navbar-nav-links">
-                <a href="#consoleSection" class="nav-link-item active">
-                    <i class="bi bi-grid-1x2"></i>
-                    <span>Diagnostic Console</span>
-                </a>
-                <a href="#pathologyExplorer" class="nav-link-item">
-                    <i class="bi bi-journal-medical"></i>
-                    <span>Pathology Guide</span>
-                </a>
-                <a href="#resultsSection" class="nav-link-item">
-                    <i class="bi bi-graph-up"></i>
-                    <span>Inference Telemetry</span>
-                </a>
-            </div>
-
-            <!-- Right Status Indicator & Compliance Tag -->
-            <div class="navbar-status-group">
-                <div class="engine-status-badge">
-                    <span class="engine-dot"></span>
-                    <span>VGG-16 Engine Active</span>
-                </div>
-                <div class="regulatory-tag">
-                    <i class="bi bi-shield-check"></i>
-                    <span>INVESTIGATIONAL USE</span>
-                </div>
+            <div class="brand-model-pill">
+                <span class="brand-pulse-dot"></span>
+                <span>VGG-16 Inference Engine</span>
             </div>
         </nav>
 
-        <!-- Main Header -->
+        <!-- Clean, Direct Hero Header -->
         <header class="workspace-hero">
-            <h1 class="hero-title">Cranial MRI Diagnostic & Explainability Suite</h1>
-            <p class="hero-lead">Multi-cohort histopathological classification across glioma, meningioma, and pituitary neoplasms with localized spatial Grad-CAM activation mapping.</p>
-            <div class="clinical-meta-ribbon">
-                <div class="meta-entry">
-                    <i class="bi bi-diagram-3"></i>
-                    <span>Architecture:</span>
-                    <span class="meta-val-white">VGG-16 Transfer Learning</span>
-                </div>
-                <div class="meta-divider">&bull;</div>
-                <div class="meta-entry">
-                    <i class="bi bi-check2-circle"></i>
-                    <span>Validation Accuracy:</span>
-                    <span class="meta-val-highlight">97.4%</span>
-                </div>
-                <div class="meta-divider">&bull;</div>
-                <div class="meta-entry">
-                    <i class="bi bi-layers"></i>
-                    <span>Saliency Engine:</span>
-                    <span class="meta-val-white">Grad-CAM (block5_conv3)</span>
-                </div>
-                <div class="meta-divider">&bull;</div>
-                <div class="meta-entry">
-                    <i class="bi bi-shield-check"></i>
-                    <span>Validation Gate:</span>
-                    <span class="meta-val-highlight">Dual-Branch Guard</span>
-                </div>
-            </div>
+            <h1 class="hero-title">Brain MRI Tumor Detection & Analysis</h1>
+            <p class="hero-lead">Upload an axial brain MRI scan to detect tumors with deep learning and visualize neural attention with Grad-CAM explainability.</p>
         </header>
 
         {% if error_message %}
@@ -1799,15 +1860,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Explorer Footer Action -->
-                    <div class="explorer-footer-bar">
-                        <span>Clinical Decision Support System</span>
-                        <button type="button" class="btn-copy-findings" onclick="copyActiveFindings()">
-                            <i class="bi bi-clipboard2-check"></i>
-                            <span>Copy Clinical Notes</span>
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -1987,16 +2039,12 @@
             <!-- Clinical Action Suite -->
             <div class="clinical-action-bar">
                 <div style="font-size: 0.84rem; color: #cbd5e1;">
-                    <strong>Diagnostic Report Suite:</strong> Export standardized findings or evaluate another case.
+                    <strong>Diagnostic Report:</strong> Generate a printable hospital diagnostic report or evaluate another scan.
                 </div>
                 <div class="action-btns">
                     <button type="button" class="btn-action-primary" onclick="printDiagnosticReport()">
                         <i class="bi bi-printer"></i>
                         <span>Print / Export PDF Report</span>
-                    </button>
-                    <button type="button" class="btn-action-secondary" onclick="copyDiagnosticSummary()">
-                        <i class="bi bi-clipboard2-check"></i>
-                        <span>Copy EHR Summary</span>
                     </button>
                     <button type="button" class="btn-action-secondary" onclick="triggerBrowse()">
                         <i class="bi bi-arrow-repeat"></i>
@@ -2007,16 +2055,20 @@
         </section>
         {% endif %}
 
-        <footer class="footer-note">
-            <div><strong>NeuroScan AI &bull; Clinical Neuro-Oncology Diagnostic Suite</strong></div>
-            <div>Academic Research & Clinical Demonstration System &bull; VGG-16 Transfer Learning with Grad-CAM &bull; Dual-Branch Domain Validation Gate</div>
-        </footer>
-    </div>
+        <!-- Physician Attestation Block (Visible Only in Print/PDF) -->
+        <div class="print-signoff-block">
+            <div><strong>Attending Reviewer Attestation:</strong> This computer-aided radiological assessment was generated using deep neural transfer learning with Grad-CAM activation mapping. All computational findings require clinical correlation by a board-certified neuroradiologist.</div>
+            <div class="signoff-row">
+                <div>Physician / Reviewer: <span class="signoff-line"></span></div>
+                <div>Signature: <span class="signoff-line"></span></div>
+                <div>Date: <span class="signoff-line" style="width: 120px;"></span></div>
+            </div>
+        </div>
 
-    <!-- Toast Notification Popup -->
-    <div class="toast-popup" id="toastNotification">
-        <i class="bi bi-check-circle-fill" style="color: #34d399; font-size: 1.1rem;"></i>
-        <span id="toastText">Clinical summary copied to clipboard!</span>
+        <footer class="footer-note">
+            <div><strong>NeuroScan &bull; Clinical Neuro-Oncology Diagnostic Suite</strong></div>
+            <div>Academic Research & Clinical Demonstration System &bull; VGG-16 Transfer Learning with Grad-CAM</div>
+        </footer>
     </div>
 
     <script>
@@ -2035,26 +2087,22 @@
             glioma: {
                 title: 'Glioma Clinical Profile',
                 avatar: '🧠',
-                color: '#f59e0b',
-                summary: 'Glioma: Primary central nervous system neoplasm originating from glial cells. Characterized by diffuse infiltrative growth patterns into brain parenchyma with marked perilesional edema.'
+                color: '#f59e0b'
             },
             meningioma: {
                 title: 'Meningioma Clinical Profile',
                 avatar: '🔬',
-                color: '#a855f7',
-                summary: 'Meningioma: Extra-axial neoplasm arising from arachnoid cap cells of leptomeninges. >85% are benign (WHO Grade I) with broad dural base attachment and characteristic dural tail sign.'
+                color: '#a855f7'
             },
             pituitary: {
                 title: 'Pituitary Clinical Profile',
                 avatar: '⚡',
-                color: '#ec4899',
-                summary: 'Pituitary Neuroendocrine Tumor (PitNET / Adenoma): Sellar region mass situated within sella turcica. Produces mass effect on optic chiasm (bitemporal hemianopsia) or endocrine hypersecretion.'
+                color: '#ec4899'
             },
             notumor: {
                 title: 'Healthy Brain Profile',
                 avatar: '🛡️',
-                color: '#10b981',
-                summary: 'Healthy Neuroanatomy: Normal brain parenchyma without neoplastic mass effect, midline shift, abnormal focal enhancement, or restricted diffusion on axial MRI sequences.'
+                color: '#10b981'
             }
         };
 
@@ -2103,52 +2151,7 @@
         });
         {% endif %}
 
-        // Toast Helper
-        function showToast(msg) {
-            const toast = document.getElementById('toastNotification');
-            const text = document.getElementById('toastText');
-            if (!toast || !text) return;
-            text.textContent = msg;
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-
-        // Copy Active Findings from Explorer
-        function copyActiveFindings() {
-            const activeInfo = pathologyData[currentActivePathology];
-            const textToCopy = `[NEUROSCAN AI CLINICAL KNOWLEDGE BASE]\nProfile: ${activeInfo.title}\nOverview: ${activeInfo.summary}\nDate: ${new Date().toLocaleString()}`;
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                showToast(`Copied ${activeInfo.title} to clipboard!`);
-            }).catch(() => {
-                showToast('Unable to copy to clipboard.');
-            });
-        }
-
-        // Copy Full Diagnostic Case Summary
-        function copyDiagnosticSummary() {
-            {% if result %}
-            const resultText = `[NEUROSCAN AI CLINICAL DIAGNOSTIC REPORT]
-Case / Filename: {{ active_filename if active_filename else 'Uploaded MRI' }}
-Primary Classification: {{ result }}
-Model Certainty: {{ confidence }}%
-Architecture: VGG-16 DCNN (block5_conv3 Grad-CAM)
-Date of Evaluation: ${new Date().toLocaleString()}
-Clinical Risk Assessment: {% if 'No Tumor' in result %}Benign / Unremarkable Parenchyma{% else %}Urgent Neurosurgical Review Indicated{% endif %}
-Recommendation: Review with attending neuroradiologist for histopathological correlation.`;
-
-            navigator.clipboard.writeText(resultText).then(() => {
-                showToast('Diagnostic EHR summary copied to clipboard!');
-            }).catch(() => {
-                showToast('Unable to copy diagnostic summary.');
-            });
-            {% else %}
-            showToast('No diagnostic results available to copy.');
-            {% endif %}
-        }
-
-        // Print Diagnostic Report
+        // Print Diagnostic Report Function
         function printDiagnosticReport() {
             window.print();
         }
