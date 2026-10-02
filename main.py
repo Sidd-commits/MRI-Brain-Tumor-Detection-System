@@ -1,5 +1,12 @@
 import os
 import uuid
+
+# Memory and thread optimization for container environments (Render 512MB RAM)
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["TF_NUM_INTRAOP_THREADS"] = "1"
+os.environ["TF_NUM_INTEROP_THREADS"] = "1"
+
 import numpy as np
 import tensorflow as tf
 from PIL import Image
@@ -9,7 +16,6 @@ import matplotlib.cm as cm
 from werkzeug.utils import secure_filename
 from flask import Flask, render_template, request, send_from_directory, redirect, url_for
 from tensorflow.keras.models import load_model
-from keras.preprocessing.image import load_img, img_to_array
 
 # Application setup
 app = Flask(__name__)
@@ -61,6 +67,13 @@ try:
 except Exception as e:
     print(f"Warning: Grad-CAM models could not be initialized: {e}")
     GRADCAM_SUPPORTED = False
+
+# Model warmup: prime TensorFlow graph execution on startup
+try:
+    _warmup_input = np.zeros((1, 128, 128, 3), dtype=np.float32)
+    model.predict(_warmup_input, verbose=0)
+except Exception as _w_err:
+    print(f"Warmup notice: {_w_err}")
 
 
 def allowed_file(filename):
@@ -206,8 +219,9 @@ def generate_gradcam_overlay(image_path, output_path):
         return False
 
     try:
-        img = load_img(image_path, target_size=(128, 128))
-        img_array = np.expand_dims(img_to_array(img) / 255.0, axis=0)
+        with Image.open(image_path) as raw_img:
+            img = raw_img.convert('RGB').resize((128, 128))
+        img_array = np.expand_dims(np.array(img, dtype=np.float32) / 255.0, axis=0)
 
         with tf.GradientTape() as tape:
             conv_outputs = last_conv_model(img_array)
@@ -249,8 +263,9 @@ def predict_tumor(image_path):
     Returns: (result_text, confidence_float, tumor_type_str, probabilities_dict, gradcam_filename)
     """
     IMAGE_SIZE = 128
-    img = load_img(image_path, target_size=(IMAGE_SIZE, IMAGE_SIZE))
-    img_array = img_to_array(img) / 255.0
+    with Image.open(image_path) as raw_img:
+        img = raw_img.convert('RGB').resize((IMAGE_SIZE, IMAGE_SIZE))
+    img_array = np.array(img, dtype=np.float32) / 255.0
     img_array = np.expand_dims(img_array, axis=0)
 
     raw_preds = model.predict(img_array, verbose=0)[0]
@@ -406,4 +421,5 @@ def get_sample_file(filename):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
