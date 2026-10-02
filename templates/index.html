@@ -72,11 +72,223 @@
             pointer-events: none;
         }
 
+        /* High-Tech Neural Canvas & Background Grid */
+        #neuralCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .cyber-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+            background-size: 36px 36px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Side HUD Floating Panels for Wide Desktop Viewports */
+        .side-hud {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 5;
+            width: 210px;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .hud-left {
+            left: max(16px, calc(50% - 730px));
+        }
+
+        .hud-right {
+            right: max(16px, calc(50% - 730px));
+        }
+
+        @media (max-width: 1440px) {
+            .hud-left { left: 14px; width: 185px; }
+            .hud-right { right: 14px; width: 185px; }
+        }
+
+        @media (max-width: 1280px) {
+            .side-hud {
+                display: none !important;
+            }
+        }
+
+        .hud-panel {
+            background: rgba(13, 19, 33, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 18px 16px;
+            backdrop-filter: blur(14px);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .hud-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #818cf8;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .hud-tag.hud-tag-green {
+            color: #34d399;
+        }
+
+        .hud-pulse {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #818cf8;
+            box-shadow: 0 0 8px #818cf8;
+            animation: pulse-ring 2s infinite;
+        }
+
+        .hud-pulse.hud-pulse-green {
+            background: #10b981;
+            box-shadow: 0 0 8px #10b981;
+        }
+
+        .hud-title {
+            font-size: 0.76rem;
+            font-weight: 800;
+            color: #e2e8f0;
+            letter-spacing: 0.6px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        /* Animated EEG Wave SVG */
+        .hud-eeg-wrap {
+            height: 38px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 8px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            margin-bottom: 14px;
+            position: relative;
+        }
+
+        .eeg-wave {
+            width: 200%;
+            height: 100%;
+            stroke: #818cf8;
+            stroke-width: 1.6;
+            fill: none;
+            stroke-dasharray: 400;
+            stroke-dashoffset: 400;
+            animation: eeg-sweep 3.5s linear infinite;
+        }
+
+        @keyframes eeg-sweep {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Rotating Scanner Reticle */
+        .hud-scanner-reticle {
+            width: 76px;
+            height: 76px;
+            margin: 6px auto 14px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .reticle-ring {
+            position: absolute;
+            border-radius: 50%;
+            box-sizing: border-box;
+        }
+
+        .ring-outer {
+            width: 100%;
+            height: 100%;
+            border: 1px dashed rgba(16, 185, 129, 0.45);
+            animation: spin 14s linear infinite;
+        }
+
+        .ring-inner {
+            width: 72%;
+            height: 72%;
+            border: 1px solid rgba(6, 182, 212, 0.45);
+            border-top-color: transparent;
+            border-bottom-color: transparent;
+            animation: spin-reverse 8s linear infinite;
+        }
+
+        .reticle-center {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #34d399;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes spin-reverse {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+
+        .hud-metric-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.69rem;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .hud-metric-row:last-child {
+            border-bottom: none;
+        }
+
+        .hud-metric-label {
+            color: #64748b;
+        }
+
+        .hud-metric-val {
+            color: #cbd5e1;
+            font-weight: 600;
+        }
+
+        .highlight-green {
+            color: #34d399;
+            font-weight: 700;
+        }
+
         .main-container {
             max-width: 960px;
             margin: 0 auto;
             position: relative;
-            z-index: 1;
+            z-index: 10;
         }
 
         /* Header */
@@ -855,6 +1067,82 @@
     </style>
 </head>
 <body>
+    <!-- Interactive Background Neural Synapse & Starfield Canvas -->
+    <canvas id="neuralCanvas"></canvas>
+    <div class="cyber-grid" aria-hidden="true"></div>
+
+    <!-- Left Cybernetic Neuroscience HUD Accent (Desktop) -->
+    <aside class="side-hud hud-left" aria-hidden="true">
+        <div class="hud-panel">
+            <div class="hud-tag">
+                <span class="hud-pulse"></span>
+                <span>NEURAL BUS ONLINE</span>
+            </div>
+            <div class="hud-title">CORTICAL MONITOR</div>
+            
+            <div class="hud-eeg-wrap">
+                <svg class="eeg-wave" viewBox="0 0 160 40">
+                    <path class="eeg-line" d="M0,20 L30,20 L35,8 L40,32 L45,14 L50,26 L55,20 L85,20 L90,6 L95,34 L100,10 L105,28 L110,20 L160,20" />
+                </svg>
+            </div>
+
+            <div class="hud-metrics">
+                <div class="hud-metric-row">
+                    <span class="hud-metric-label">ARCHITECTURE</span>
+                    <span class="hud-metric-val">VGG-16 DCNN</span>
+                </div>
+                <div class="hud-metric-row">
+                    <span class="hud-metric-label">KERNEL TENSOR</span>
+                    <span class="hud-metric-val">128x128x3</span>
+                </div>
+                <div class="hud-metric-row">
+                    <span class="hud-metric-label">ACTIVATION</span>
+                    <span class="hud-metric-val">Grad-CAM B5</span>
+                </div>
+                <div class="hud-metric-row">
+                    <span class="hud-metric-label">STREAM STATUS</span>
+                    <span class="hud-metric-val highlight-green">LIVE 60FPS</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Right Cybernetic Scanner Telemetry HUD Accent (Desktop) -->
+    <aside class="side-hud hud-right" aria-hidden="true">
+        <div class="hud-panel">
+            <div class="hud-tag hud-tag-green">
+                <span class="hud-pulse hud-pulse-green"></span>
+                <span>BENCHMARK VERIFIED</span>
+            </div>
+            <div class="hud-title">DIAGNOSTIC TELEMETRY</div>
+
+            <div class="hud-scanner-reticle">
+                <div class="reticle-ring ring-outer"></div>
+                <div class="reticle-ring ring-inner"></div>
+                <span class="reticle-center">95.7%</span>
+            </div>
+
+            <div class="hud-metrics">
+                <div class="hud-metric-row">
+                    <span class="hud-metric-label">TEST ACCURACY</span>
+                    <span class="hud-metric-val highlight-green">95.73%</span>
+                </div>
+                <div class="hud-metric-row">
+                    <span class="hud-metric-label">TEST COHORT</span>
+                    <span class="hud-metric-val">1,311 SCANS</span>
+                </div>
+                <div class="hud-metric-row">
+                    <span class="hud-metric-label">DOMAIN GATE</span>
+                    <span class="hud-metric-val highlight-green">ARMED</span>
+                </div>
+                <div class="hud-metric-row">
+                    <span class="hud-metric-label">INFERENCE TIME</span>
+                    <span class="hud-metric-val">&lt; 180 ms</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
     <div class="main-container">
         <!-- App Header -->
         <header class="app-header">
@@ -1332,6 +1620,317 @@
                 target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         });
+
+        // ==========================================
+        // Interactive Neural Synapse & Starfield Engine
+        // ==========================================
+        (function() {
+            const canvas = document.getElementById('neuralCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            let width = 0;
+            let height = 0;
+            let dpr = window.devicePixelRatio || 1;
+            let nodes = [];
+            let stars = [];
+            let impulses = [];
+            let shockwaves = [];
+            let animationFrameId = null;
+            let isTabActive = true;
+
+            const mouse = { x: null, y: null, maxRadius: 180 };
+
+            const PALETTE = [
+                { r: 99, g: 102, b: 241 },   // Indigo
+                { r: 6, g: 182, b: 212 },    // Cyan
+                { r: 168, g: 85, b: 247 },   // Violet
+                { r: 16, g: 185, b: 129 }    // Emerald
+            ];
+
+            function resize() {
+                dpr = window.devicePixelRatio || 1;
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width * dpr;
+                canvas.height = height * dpr;
+                canvas.style.width = width + 'px';
+                canvas.style.height = height + 'px';
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+                initElements();
+            }
+
+            function initElements() {
+                // Adaptive count based on screen area
+                const count = Math.min(85, Math.max(28, Math.floor((width * height) / 18000)));
+                nodes = [];
+                for (let i = 0; i < count; i++) {
+                    const col = PALETTE[Math.floor(Math.random() * PALETTE.length)];
+                    const isHub = Math.random() < 0.14;
+                    nodes.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        vx: (Math.random() - 0.5) * 0.45,
+                        vy: (Math.random() - 0.5) * 0.45,
+                        radius: isHub ? (Math.random() * 1.5 + 2.8) : (Math.random() * 1.2 + 1.6),
+                        color: col,
+                        isHub: isHub,
+                        pulsePhase: Math.random() * Math.PI * 2,
+                        glowAlpha: Math.random() * 0.4 + 0.3
+                    });
+                }
+
+                // Ambient drifting background stars
+                const starCount = Math.floor(count * 0.6);
+                stars = [];
+                for (let i = 0; i < starCount; i++) {
+                    stars.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        r: Math.random() * 0.9 + 0.5,
+                        twinklePhase: Math.random() * Math.PI * 2,
+                        speed: Math.random() * 0.15 + 0.05
+                    });
+                }
+
+                impulses = [];
+            }
+
+            // Spawn action potential impulses along synaptic connections
+            function maybeSpawnImpulse() {
+                if (impulses.length > 8 || nodes.length < 2) return;
+                if (Math.random() < 0.04) {
+                    const fromIdx = Math.floor(Math.random() * nodes.length);
+                    const n1 = nodes[fromIdx];
+                    let bestIdx = -1;
+                    let minD = 135;
+                    for (let j = 0; j < nodes.length; j++) {
+                        if (j === fromIdx) continue;
+                        const dx = n1.x - nodes[j].x;
+                        const dy = n1.y - nodes[j].y;
+                        const d = Math.hypot(dx, dy);
+                        if (d < minD) {
+                            bestIdx = j;
+                            minD = d;
+                            break;
+                        }
+                    }
+                    if (bestIdx !== -1) {
+                        impulses.push({
+                            from: fromIdx,
+                            to: bestIdx,
+                            progress: 0,
+                            speed: 0.02 + Math.random() * 0.02,
+                            color: n1.color
+                        });
+                    }
+                }
+            }
+
+            function update() {
+                // Update and draw background stars
+                for (let i = 0; i < stars.length; i++) {
+                    const s = stars[i];
+                    s.y -= s.speed;
+                    if (s.y < 0) {
+                        s.y = height;
+                        s.x = Math.random() * width;
+                    }
+                    s.twinklePhase += 0.02;
+                    const a = 0.2 + 0.3 * Math.sin(s.twinklePhase);
+                    ctx.fillStyle = `rgba(226, 232, 240, ${Math.max(0.05, a)})`;
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Update nodes physics
+                const maxConnDist = 130;
+                for (let i = 0; i < nodes.length; i++) {
+                    const n = nodes[i];
+                    n.x += n.vx;
+                    n.y += n.vy;
+
+                    // Bounce softly off screen boundaries
+                    if (n.x < 0) { n.x = 0; n.vx *= -1; }
+                    else if (n.x > width) { n.x = width; n.vx *= -1; }
+                    if (n.y < 0) { n.y = 0; n.vy *= -1; }
+                    else if (n.y > height) { n.y = height; n.vy *= -1; }
+
+                    // Mouse gravitational attraction
+                    if (mouse.x !== null && mouse.y !== null) {
+                        const mdx = mouse.x - n.x;
+                        const mdy = mouse.y - n.y;
+                        const md = Math.hypot(mdx, mdy);
+                        if (md < mouse.maxRadius && md > 0) {
+                            const force = (1 - md / mouse.maxRadius) * 0.015;
+                            n.vx += (mdx / md) * force;
+                            n.vy += (mdy / md) * force;
+                            n.vx *= 0.98;
+                            n.vy *= 0.98;
+                        }
+                    }
+
+                    n.pulsePhase += 0.03;
+                }
+
+                // Update & draw shockwaves
+                for (let i = shockwaves.length - 1; i >= 0; i--) {
+                    const sw = shockwaves[i];
+                    sw.r += 4.5;
+                    sw.alpha -= 0.02;
+                    if (sw.alpha <= 0) {
+                        shockwaves.splice(i, 1);
+                    } else {
+                        ctx.save();
+                        ctx.strokeStyle = `rgba(99, 102, 241, ${sw.alpha * 0.5})`;
+                        ctx.lineWidth = 1.5;
+                        ctx.beginPath();
+                        ctx.arc(sw.x, sw.y, sw.r, 0, Math.PI * 2);
+                        ctx.stroke();
+                        ctx.restore();
+                    }
+                }
+
+                // Draw synaptic connection lines between nodes
+                for (let i = 0; i < nodes.length; i++) {
+                    const n1 = nodes[i];
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        const n2 = nodes[j];
+                        const dx = n1.x - n2.x;
+                        const dy = n1.y - n2.y;
+                        const dist = Math.hypot(dx, dy);
+
+                        if (dist < maxConnDist) {
+                            const alpha = (1 - dist / maxConnDist) * 0.22;
+                            ctx.beginPath();
+                            ctx.moveTo(n1.x, n1.y);
+                            ctx.lineTo(n2.x, n2.y);
+                            ctx.strokeStyle = `rgba(99, 102, 241, ${alpha})`;
+                            ctx.lineWidth = 0.9;
+                            ctx.stroke();
+                        }
+                    }
+
+                    // Connect to mouse cursor if close
+                    if (mouse.x !== null && mouse.y !== null) {
+                        const mdx = n1.x - mouse.x;
+                        const mdy = n1.y - mouse.y;
+                        const mdist = Math.hypot(mdx, mdy);
+                        if (mdist < mouse.maxRadius) {
+                            const mAlpha = (1 - mdist / mouse.maxRadius) * 0.45;
+                            ctx.beginPath();
+                            ctx.moveTo(n1.x, n1.y);
+                            ctx.lineTo(mouse.x, mouse.y);
+                            ctx.strokeStyle = `rgba(6, 182, 212, ${mAlpha})`;
+                            ctx.lineWidth = 1.2;
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                // Update & draw action potential impulses
+                maybeSpawnImpulse();
+                for (let i = impulses.length - 1; i >= 0; i--) {
+                    const imp = impulses[i];
+                    imp.progress += imp.speed;
+                    if (imp.progress >= 1 || !nodes[imp.from] || !nodes[imp.to]) {
+                        impulses.splice(i, 1);
+                    } else {
+                        const nFrom = nodes[imp.from];
+                        const nTo = nodes[imp.to];
+                        const curX = nFrom.x + (nTo.x - nFrom.x) * imp.progress;
+                        const curY = nFrom.y + (nTo.y - nFrom.y) * imp.progress;
+
+                        ctx.save();
+                        ctx.fillStyle = '#38bdf8';
+                        ctx.shadowColor = '#06b6d4';
+                        ctx.shadowBlur = 8;
+                        ctx.beginPath();
+                        ctx.arc(curX, curY, 2.2, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.restore();
+                    }
+                }
+
+                // Draw nodes
+                for (let i = 0; i < nodes.length; i++) {
+                    const n = nodes[i];
+                    const pulse = Math.sin(n.pulsePhase) * 0.4 + 1;
+                    const r = n.radius * pulse;
+
+                    ctx.save();
+                    if (n.isHub) {
+                        // Pulsing aura ring for pyramidal cortical hub nodes
+                        const ringR = r * 3.2 + Math.sin(n.pulsePhase) * 2;
+                        ctx.strokeStyle = `rgba(${n.color.r}, ${n.color.g}, ${n.color.b}, 0.22)`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.arc(n.x, n.y, ringR, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
+
+                    // Node body
+                    ctx.shadowColor = `rgba(${n.color.r}, ${n.color.g}, ${n.color.b}, 0.8)`;
+                    ctx.shadowBlur = n.isHub ? 12 : 7;
+                    ctx.fillStyle = `rgba(${n.color.r}, ${n.color.g}, ${n.color.b}, 0.85)`;
+                    ctx.beginPath();
+                    ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            function loop() {
+                if (!isTabActive) return;
+                ctx.clearRect(0, 0, width, height);
+                update();
+                animationFrameId = requestAnimationFrame(loop);
+            }
+
+            // Mouse tracking
+            window.addEventListener('mousemove', (e) => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+            }, { passive: true });
+
+            window.addEventListener('mouseleave', () => {
+                mouse.x = null;
+                mouse.y = null;
+            });
+
+            // Interactive shockwave ring on click
+            window.addEventListener('click', (e) => {
+                if (['BUTTON', 'INPUT', 'SELECT', 'A', 'TEXTAREA'].includes(e.target.tagName)) return;
+                shockwaves.push({ x: e.clientX, y: e.clientY, r: 5, alpha: 1.0 });
+                for (let i = 0; i < nodes.length; i++) {
+                    const n = nodes[i];
+                    const d = Math.hypot(n.x - e.clientX, n.y - e.clientY);
+                    if (d < 180 && d > 0) {
+                        const push = (1 - d / 180) * 1.8;
+                        n.vx += (n.x - e.clientX) / d * push;
+                        n.vy += (n.y - e.clientY) / d * push;
+                    }
+                }
+            });
+
+            // Tab visibility optimization
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    isTabActive = false;
+                    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                } else {
+                    isTabActive = true;
+                    animationFrameId = requestAnimationFrame(loop);
+                }
+            });
+
+            window.addEventListener('resize', resize, { passive: true });
+
+            resize();
+            loop();
+        })();
     </script>
 </body>
 </html>
