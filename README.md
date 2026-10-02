@@ -8,12 +8,14 @@ A deep learning project that classifies brain MRI scans into four categories —
 
 ## Features
 
-- **4-class MRI classification:** glioma, meningioma, pituitary tumor, no tumor
-- **Transfer learning** with VGG16 (pre-trained on ImageNet)
-- **Flask web UI** for uploading MRI images and viewing predictions
-- **Confidence score** displayed with each prediction
-- **Clinical information cards** for detected tumor types
-- **Training notebook** with evaluation metrics (accuracy, confusion matrix, ROC-AUC)
+- **4-class MRI classification:** Glioma, Meningioma, Pituitary tumor, No tumor
+- **Transfer learning** with VGG16 (pre-trained on ImageNet, 95.73% test accuracy)
+- **Grad-CAM explainability:** Convolutional activation heatmaps (`block5_conv3`) showing exact tumor localization
+- **Multi-class probability distribution:** Softmax percentage breakdown across all 4 categories
+- **1-Click live presentation samples:** Instantly test Glioma, Meningioma, Pituitary, and Normal scans without file dialogs
+- **Clinical information cards:** Pathology stats, histological grades, and clinical management profiles
+- **Drag-and-drop & live preview:** Seamless image upload with instant client preview
+- **Robust Flask web backend:** Sanitized filenames, file validation, error handling, and memory safeguards
 
 ---
 
@@ -155,17 +157,17 @@ Open and run `models/brain_tumour_detection_using_deep_learning.ipynb` in Google
 | Metric | Value |
 |--------|-------|
 | Training accuracy (epoch 5) | 96.63% |
-| Test accuracy | 95% |
-| Macro avg F1-score | 0.95 |
+| Test accuracy (1,311 scans) | **95.73%** |
+| Macro avg F1-score | **0.9548** |
 
-Per-class performance on the test set:
+Per-class performance on the complete test set:
 
-| Class | Precision | Recall | F1-Score |
-|-------|-----------|--------|----------|
-| Glioma | 0.95 | 0.88 | 0.91 |
-| Meningioma | 0.99 | 0.98 | 0.99 |
-| No Tumor | 0.99 | 0.96 | 0.98 |
-| Pituitary | 0.87 | 0.97 | 0.92 |
+| Class | Precision | Recall | F1-Score | Support |
+|-------|-----------|--------|----------|---------|
+| **Glioma** | 96.70% | 88.00% | 92.15% | 300 |
+| **No Tumor** | 99.50% | 98.52% | 99.01% | 405 |
+| **Pituitary** | 99.32% | 97.33% | 98.32% | 300 |
+| **Meningioma** | 87.46% | 98.04% | 92.45% | 306 |
 
 ---
 
@@ -198,7 +200,7 @@ flowchart LR
 
 ## Future Improvements
 
-- [ ] Add Grad-CAM visualization for explainability
+- [x] Add Grad-CAM visualization for explainability (Implemented)
 - [ ] Support DICOM medical image format
 - [ ] Deploy to cloud (Render, AWS, etc.)
 - [ ] Try other architectures (ResNet50, EfficientNet)
@@ -206,13 +208,18 @@ flowchart LR
 
 ---
 
-## Interface
-<img width="1280" height="681" alt="image" src="https://github.com/user-attachments/assets/b8a348b3-b07c-4667-9c9b-02b52a0261fd" />
-<img width="1280" height="683" alt="image" src="https://github.com/user-attachments/assets/77ad658c-4f8a-4d47-be49-8bf1c265b23a" />
-<img width="1280" height="682" alt="image" src="https://github.com/user-attachments/assets/aeb211ed-10d1-4eda-a6c3-167b2622d305" />
+## License
 
+This project is open source. Add your preferred license here (e.g., MIT).
 
+---
 
+## Author
+
+**Your Name**  
+- GitHub: [@YOUR_USERNAME](https://github.com/YOUR_USERNAME)
+
+---
 
 ## Acknowledgments
 
