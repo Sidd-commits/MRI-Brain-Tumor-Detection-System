@@ -1,11 +1,10 @@
 import os
 import uuid
+import warnings
+warnings.filterwarnings('ignore', category=UserWarning, module='keras')
 
-# Memory and thread optimization for container environments (Render 512MB RAM)
+# Container optimization
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
-os.environ["OMP_NUM_THREADS"] = "1"
-os.environ["TF_NUM_INTRAOP_THREADS"] = "1"
-os.environ["TF_NUM_INTEROP_THREADS"] = "1"
 
 import numpy as np
 import tensorflow as tf
@@ -36,7 +35,7 @@ def build_brain_tumor_detector():
     and unified Functional topology. This avoids legacy Keras 2/3 nested sequential
     deserialization issues and guarantees 100% cross-platform compatibility.
     """
-    inputs = tf.keras.Input(shape=(128, 128, 3), name='mri_input')
+    inputs = tf.keras.Input(shape=(128, 128, 3))
     vgg_base = tf.keras.applications.VGG16(include_top=False, weights=None, input_tensor=inputs)
     x = tf.keras.layers.Flatten(name='flatten')(vgg_base.output)
     x = tf.keras.layers.Dropout(0.5, name='dropout')(x)
@@ -82,6 +81,9 @@ try:
 except Exception as e:
     print(f"Warning: Grad-CAM models could not be initialized: {e}")
     GRADCAM_SUPPORTED = False
+
+# Precompute static Jet colormap lookup table (256x3 uint8) to avoid matplotlib runtime overhead
+JET_LUT = (matplotlib.colormaps['jet'](np.arange(256))[:, :3] * 255).astype(np.uint8)
 
 
 @tf.function(reduce_retracing=True)
@@ -133,6 +135,16 @@ def verify_is_brain_mri(image_path):
     """
     try:
         with Image.open(image_path) as raw_img:
+            orig_w, orig_h = raw_img.size
+            if orig_w < 64 or orig_h < 64:
+                return False, {
+                    'detected_type': 'Low-Resolution Image',
+                    'simple_reason': 'The image is too small to identify brain anatomical structures.',
+                    'tip': 'Please upload a larger brain scan (recommended 128x128 or higher).'
+                }
+            # Resize image down to max 256x256 before converting to numpy
+            # This protects against high-resolution memory spikes and OOM crashes
+            raw_img.thumbnail((256, 256), Image.Resampling.LANCZOS)
             img = raw_img.convert('RGB')
     except Exception:
         return False, {
@@ -141,15 +153,8 @@ def verify_is_brain_mri(image_path):
             'tip': 'Please ensure your file is a valid image (JPG, PNG, or WEBP).'
         }
 
-    arr = np.array(img, dtype=float)
+    arr = np.array(img, dtype=np.float32)
     h, w, _ = arr.shape
-
-    if h < 64 or w < 64:
-        return False, {
-            'detected_type': 'Low-Resolution Image',
-            'simple_reason': 'The image is too small to identify brain anatomical structures.',
-            'tip': 'Please upload a larger brain scan (recommended 128x128 or higher).'
-        }
 
     # 1. Color / Chromatic Divergence Check
     # Authentic clinical brain MRI scans are acquired as monochromatic grayscale modalities.
@@ -249,31 +254,32 @@ def verify_is_brain_mri(image_path):
 
 
 def generate_gradcam_overlay(image_path, output_path):
-    """Generates a Grad-CAM heatmap overlaid on the MRI scan."""
+    """Generates a Grad-CAM heatmap overlaid on the MRI scan with strict memory bounds."""
     if not GRADCAM_SUPPORTED:
         return False
 
     try:
         with Image.open(image_path) as raw_img:
-            img = raw_img.convert('RGB').resize((128, 128))
-        img_array = np.expand_dims(np.array(img, dtype=np.float32) / 255.0, axis=0)
+            img = raw_img.convert('RGB')
+            # Cap maximum dimension to 512px to eliminate memory spikes
+            if img.width > 512 or img.height > 512:
+                img.thumbnail((512, 512), Image.Resampling.BILINEAR)
+            base_img = img.copy()
+            model_img = img.resize((128, 128))
+
+        img_array = np.expand_dims(np.array(model_img, dtype=np.float32) / 255.0, axis=0)
         img_tensor = tf.convert_to_tensor(img_array)
 
         heatmap = compute_gradcam_tensor(img_tensor).numpy()
 
-        # Resize heatmap to original image dimensions
-        orig_img = Image.open(image_path).convert('RGB')
-        orig_w, orig_h = orig_img.size
-
-        cmap = matplotlib.colormaps['jet']
-        jet_colors = cmap(np.arange(256))[:, :3]
-        jet_heatmap = jet_colors[(heatmap * 255).astype(np.uint8)]
-        jet_heatmap_img = Image.fromarray((jet_heatmap * 255).astype(np.uint8)).resize(
-            (orig_w, orig_h), Image.Resampling.BILINEAR
+        # Apply precomputed Jet colormap lookup table
+        jet_heatmap = JET_LUT[(heatmap * 255).astype(np.uint8)]
+        jet_heatmap_img = Image.fromarray(jet_heatmap).resize(
+            (base_img.width, base_img.height), Image.Resampling.BILINEAR
         )
 
-        superimposed = Image.blend(orig_img, jet_heatmap_img, alpha=0.45)
-        superimposed.save(output_path, quality=95)
+        superimposed = Image.blend(base_img, jet_heatmap_img, alpha=0.45)
+        superimposed.save(output_path, quality=90)
         return True
     except Exception as err:
         print(f"Error computing Grad-CAM: {err}")
@@ -384,13 +390,20 @@ def index():
                 with Image.open(file_location) as test_img:
                     test_img.verify()
             except Exception:
-                os.remove(file_location)
+                if os.path.exists(file_location):
+                    os.remove(file_location)
                 return render_template(
                     'index.html',
                     result=None,
                     error_message="The uploaded file is not a valid image scan. Please provide a genuine MRI image.",
                     sample_scans=SAMPLE_SCANS
                 )
+
+            # Reopen and bound maximum resolution to 1024x1024 to eliminate memory spikes
+            with Image.open(file_location) as raw_upload:
+                if raw_upload.width > 1024 or raw_upload.height > 1024:
+                    raw_upload.thumbnail((1024, 1024), Image.Resampling.BILINEAR)
+                    raw_upload.convert('RGB').save(file_location, quality=92)
 
             # Clinical Domain Validation Gate: Verify image is an authentic Brain MRI scan
             is_valid_mri, rejection_info = verify_is_brain_mri(file_location)

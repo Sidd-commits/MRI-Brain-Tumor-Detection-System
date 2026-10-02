@@ -2265,6 +2265,21 @@
             uploadForm.addEventListener('submit', () => {
                 btnAnalyze.disabled = true;
                 btnAnalyze.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Executing VGG-16 Inference & Grad-CAM...';
+
+                // Helpful feedback if server is waking from cold sleep on Render free tier
+                setTimeout(() => {
+                    if (btnAnalyze.disabled) {
+                        btnAnalyze.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Processing scan (server waking from sleep, please hold)...';
+                    }
+                }, 7000);
+
+                // Watchdog timeout to prevent infinite frozen button if network resets
+                setTimeout(() => {
+                    if (btnAnalyze.disabled) {
+                        btnAnalyze.disabled = false;
+                        btnAnalyze.innerHTML = '<i class="bi bi-arrow-clockwise me-1"></i> Retry Analysis';
+                    }
+                }, 45000);
             });
         }
 
