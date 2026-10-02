@@ -481,6 +481,43 @@ def get_sample_file(filename):
     return send_from_directory(app.config['SAMPLE_FOLDER'], filename)
 
 
+@app.route('/api/health')
+def health_check():
+    return {
+        'status': 'online',
+        'version': '2.5.0-forksafe',
+        'model_initialized': _MODEL_INITIALIZED
+    }, 200
+
+
+@app.route('/api/diagnostic')
+def diagnostic_check():
+    import time
+    t0 = time.time()
+    res = {'version': '2.5.0-forksafe', 'tf_version': tf.__version__}
+    
+    t_init_start = time.time()
+    init_model()
+    res['init_time_ms'] = round((time.time() - t_init_start) * 1000, 1)
+
+    # Test forward pass with zeros
+    t_inf_start = time.time()
+    dummy = tf.zeros((1, 128, 128, 3), dtype=tf.float32)
+    preds = model(dummy, training=False).numpy()[0]
+    res['inference_time_ms'] = round((time.time() - t_inf_start) * 1000, 1)
+    res['sample_predictions'] = [float(p) for p in preds]
+
+    # Test Grad-CAM
+    if GRADCAM_SUPPORTED and compute_gradcam_tensor is not None:
+        t_gc_start = time.time()
+        hm = compute_gradcam_tensor(dummy).numpy()
+        res['gradcam_time_ms'] = round((time.time() - t_gc_start) * 1000, 1)
+        res['gradcam_shape'] = list(hm.shape)
+
+    res['total_diagnostic_time_ms'] = round((time.time() - t0) * 1000, 1)
+    return res, 200
+
+
 if __name__ == '__main__':
     init_model()
     port = int(os.environ.get('PORT', 5000))
