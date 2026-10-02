@@ -43,6 +43,7 @@ MRI Images/
 models/*.keras
 models/*_checkpoint*.h5
 !models/model.h5
+!models/detector_weights.weights.h5
 
 # OS generated files
 .DS_Store

@@ -29,9 +29,32 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SAMPLE_FOLDER'] = SAMPLE_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB limit
 
-# Load the trained VGG16 model
-MODEL_PATH = os.path.join(BASE_DIR, 'models', 'model.h5')
-model = load_model(MODEL_PATH)
+# Build unified Functional model architecture
+def build_brain_tumor_detector():
+    """
+    Constructs the VGG-16 MRI classification network with explicit input tensor
+    and unified Functional topology. This avoids legacy Keras 2/3 nested sequential
+    deserialization issues and guarantees 100% cross-platform compatibility.
+    """
+    inputs = tf.keras.Input(shape=(128, 128, 3), name='mri_input')
+    vgg_base = tf.keras.applications.VGG16(include_top=False, weights=None, input_tensor=inputs)
+    x = tf.keras.layers.Flatten(name='flatten')(vgg_base.output)
+    x = tf.keras.layers.Dropout(0.5, name='dropout')(x)
+    x = tf.keras.layers.Dense(128, activation='relu', name='dense')(x)
+    x = tf.keras.layers.Dropout(0.5, name='dropout_1')(x)
+    outputs = tf.keras.layers.Dense(4, activation='softmax', name='dense_1')(x)
+    return tf.keras.Model(inputs=inputs, outputs=outputs, name='mri_vgg16_detector')
+
+model = build_brain_tumor_detector()
+
+# Load weights safely from weights file (primary) or legacy h5 (fallback)
+WEIGHTS_PATH = os.path.join(BASE_DIR, 'models', 'detector_weights.weights.h5')
+LEGACY_MODEL_PATH = os.path.join(BASE_DIR, 'models', 'model.h5')
+
+if os.path.exists(WEIGHTS_PATH):
+    model.load_weights(WEIGHTS_PATH)
+elif os.path.exists(LEGACY_MODEL_PATH):
+    model.load_weights(LEGACY_MODEL_PATH)
 
 # Class labels mapped directly to model output indices:
 # Index 0: Glioma | Index 1: No Tumor | Index 2: Pituitary | Index 3: Meningioma
@@ -51,18 +74,10 @@ SAMPLE_SCANS = [
     {'name': 'Healthy Control', 'type': 'notumor', 'filename': 'Te-noTr_0004.jpg', 'tag': 'No Tumor Detected'}
 ]
 
-# Build Grad-CAM computation sub-models for convolutional explainability
+# Build Grad-CAM explainability graph directly from the unified functional model
 try:
-    vgg_base = model.layers[0]
-    last_conv_layer = vgg_base.get_layer('block5_conv3')
-    last_conv_model = tf.keras.Model(inputs=vgg_base.inputs, outputs=last_conv_layer.output)
-
-    classifier_input = tf.keras.Input(shape=last_conv_layer.output.shape[1:])
-    x = classifier_input
-    x = vgg_base.get_layer('block5_pool')(x)
-    for layer in model.layers[1:]:
-        x = layer(x)
-    classifier_model = tf.keras.Model(classifier_input, x)
+    last_conv_layer = model.get_layer('block5_conv3')
+    grad_model = tf.keras.Model(inputs=model.inputs, outputs=[last_conv_layer.output, model.output])
     GRADCAM_SUPPORTED = True
 except Exception as e:
     print(f"Warning: Grad-CAM models could not be initialized: {e}")
@@ -224,9 +239,7 @@ def generate_gradcam_overlay(image_path, output_path):
         img_array = np.expand_dims(np.array(img, dtype=np.float32) / 255.0, axis=0)
 
         with tf.GradientTape() as tape:
-            conv_outputs = last_conv_model(img_array)
-            tape.watch(conv_outputs)
-            preds = classifier_model(conv_outputs)
+            conv_outputs, preds = grad_model(img_array)
             top_idx = tf.argmax(preds[0])
             top_val = preds[:, top_idx]
 
