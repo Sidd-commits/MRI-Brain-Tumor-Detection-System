@@ -88,6 +88,15 @@ MRI-Brain-Tumor-Detection-System/
 ├── templates/
 │   └── index.html                                    # Responsive glassmorphism interface & print layout
 │
+├── static/                                           # Brand identity, icons & SEO metadata
+│   ├── favicon.svg                                   # Vector emblem for modern browser tabs
+│   ├── favicon.ico                                   # Multi-resolution fallback icon
+│   ├── og-preview.png                                # High-resolution Open Graph social preview (1200x630)
+│   ├── apple-touch-icon.png                          # Apple iOS home-screen icon
+│   ├── site.webmanifest                              # Progressive Web App manifest
+│   ├── robots.txt                                    # Search crawler indexing rules
+│   └── sitemap.xml                                   # Search engine discovery index
+│
 └── uploads/
     └── .gitkeep                                      # Ephemeral runtime upload container
 ```

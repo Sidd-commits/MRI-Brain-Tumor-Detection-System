@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Allow: /api/health
+Allow: /samples/
+Disallow: /uploads/
+
+Sitemap: https://mribraintumordetection.onrender.com/sitemap.xml

@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="50%" stop-color="#080d1a" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="50%" stop-color="#06b6d4" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <linearGradient id="brainLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#6366f1" />
+    </linearGradient>
+    <linearGradient id="brainRight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a855f7" />
+      <stop offset="100%" stop-color="#ec4899" />
+    </linearGradient>
+    <linearGradient id="pulseGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#6366f1" stop-opacity="0" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Squircle Base Frame -->
+  <rect x="16" y="16" width="480" height="480" rx="128" fill="url(#bgGrad)" stroke="url(#ringGrad)" stroke-width="8" />
+
+  <!-- Outer MRI Crosshair Coordinates -->
+  <circle cx="256" cy="256" r="185" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="14 12" opacity="0.35" />
+  <circle cx="256" cy="256" r="215" fill="none" stroke="#6366f1" stroke-width="1.5" opacity="0.25" />
+  
+  <!-- Subtle Crosshairs -->
+  <line x1="256" y1="46" x2="256" y2="76" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" opacity="0.7" />
+  <line x1="256" y1="436" x2="256" y2="466" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" opacity="0.7" />
+  <line x1="46" y1="256" x2="76" y2="256" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" opacity="0.7" />
+  <line x1="436" y1="256" x2="466" y2="256" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" opacity="0.7" />
+
+  <!-- Pulse Radial Radar Glow -->
+  <circle cx="256" cy="256" r="130" fill="url(#pulseGlow)" />
+
+  <!-- Stylized Left Cerebral Hemisphere -->
+  <path d="M 242 120
+           C 200 120, 160 145, 145 180
+           C 130 210, 135 240, 142 265
+           C 130 285, 132 315, 148 340
+           C 165 365, 195 385, 230 388
+           C 242 389, 246 385, 246 375
+           L 246 128
+           C 246 122, 244 120, 242 120 Z"
+        fill="url(#brainLeft)" opacity="0.95" filter="url(#glow)" />
+
+  <!-- Stylized Right Cerebral Hemisphere -->
+  <path d="M 270 120
+           C 312 120, 352 145, 367 180
+           C 382 210, 377 240, 370 265
+           C 382 285, 380 315, 364 340
+           C 347 365, 317 385, 282 388
+           C 270 389, 266 385, 266 375
+           L 266 128
+           C 266 122, 268 120, 270 120 Z"
+        fill="url(#brainRight)" opacity="0.95" filter="url(#glow)" />
+
+  <!-- Internal Sulci & Neural Convolution Tracks (Left) -->
+  <path d="M 175 195 C 190 205, 220 195, 235 210" fill="none" stroke="#080d1a" stroke-width="8" stroke-linecap="round" />
+  <path d="M 160 260 C 180 270, 215 255, 235 270" fill="none" stroke="#080d1a" stroke-width="8" stroke-linecap="round" />
+  <path d="M 175 325 C 195 320, 220 335, 238 330" fill="none" stroke="#080d1a" stroke-width="8" stroke-linecap="round" />
+
+  <!-- Internal Sulci & Neural Convolution Tracks (Right) -->
+  <path d="M 337 195 C 322 205, 292 195, 277 210" fill="none" stroke="#080d1a" stroke-width="8" stroke-linecap="round" />
+  <path d="M 352 260 C 332 270, 297 255, 277 270" fill="none" stroke="#080d1a" stroke-width="8" stroke-linecap="round" />
+  <path d="M 337 325 C 317 320, 292 335, 274 330" fill="none" stroke="#080d1a" stroke-width="8" stroke-linecap="round" />
+
+  <!-- Medical Cross / Neural Nexus Center Beacon -->
+  <circle cx="256" cy="256" r="32" fill="#080d1a" stroke="#22d3ee" stroke-width="5" />
+  <path d="M 256 242 L 256 270 M 242 256 L 270 256" stroke="#38bdf8" stroke-width="6" stroke-linecap="round" />
+  
+  <!-- Active Hotspot Target Beacon (Representing Grad-CAM lesion detection) -->
+  <circle cx="205" cy="225" r="14" fill="#f59e0b" filter="url(#glow)" />
+  <circle cx="205" cy="225" r="7" fill="#ffffff" />
+  <circle cx="205" cy="225" r="22" fill="none" stroke="#f59e0b" stroke-width="2.5" opacity="0.85">
+    <animate attributeName="r" values="16;28;16" dur="2.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.9;0.1;0.9" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Luminous Synapse Nodes -->
+  <circle cx="310" cy="180" r="5" fill="#38bdf8" />
+  <circle cx="330" cy="300" r="5" fill="#ec4899" />
+  <circle cx="170" cy="300" r="5" fill="#10b981" />
+</svg>

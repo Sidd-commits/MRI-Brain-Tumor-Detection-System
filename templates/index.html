@@ -2,8 +2,89 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeuroScan | Brain MRI Tumor Detection & Analysis</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>NeuroScan | Clinical Brain MRI Tumor Detection & Spatial AI Suite</title>
+    
+    <!-- Primary Search Engine Optimization (SEO) Meta Tags -->
+    <meta name="title" content="NeuroScan | Clinical Brain MRI Tumor Detection & Spatial AI Suite">
+    <meta name="description" content="State-of-the-art neuro-oncology diagnostic workstation. Classify cranial MRI scans into Glioma, Meningioma, Pituitary tumor, or Normal with 95.73% accuracy, Grad-CAM explainability heatmaps, and printable diagnostic PDF reports.">
+    <meta name="keywords" content="brain tumor detection, brain MRI classification, deep learning neurology, glioma detection, meningioma MRI, pituitary tumor diagnosis, Grad-CAM explainability, VGG16 transfer learning, medical AI, neuro-oncology, Siddhant Sawant">
+    <meta name="author" content="Siddhant Sawant">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="theme-color" content="#080d1a">
+    <meta name="msapplication-TileColor" content="#080d1a">
+    <link rel="canonical" href="https://mribraintumordetection.onrender.com/">
+
+    <!-- Favicon & Touch Icons -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <!-- Open Graph Protocol / Facebook / LinkedIn / WhatsApp -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://mribraintumordetection.onrender.com/">
+    <meta property="og:site_name" content="NeuroScan">
+    <meta property="og:title" content="NeuroScan | Brain MRI Tumor Detection & Spatial AI Suite">
+    <meta property="og:description" content="Classify brain MRI scans into Glioma, Meningioma, Pituitary, or Normal with 95.73% accuracy, instant Grad-CAM visual heatmaps, and clinical PDF reports.">
+    <meta property="og:image" content="https://mribraintumordetection.onrender.com/static/og-preview.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="NeuroScan Brain MRI Tumor Detection AI Workstation">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://mribraintumordetection.onrender.com/">
+    <meta name="twitter:title" content="NeuroScan | Brain MRI Tumor Detection & Spatial AI Suite">
+    <meta name="twitter:description" content="Deep learning neuro-oncology platform. 4-class classification with Grad-CAM activation mapping and printable clinical attestation reports.">
+    <meta name="twitter:image" content="https://mribraintumordetection.onrender.com/static/og-preview.png">
+    <meta name="twitter:image:alt" content="NeuroScan Diagnostic Platform Interface">
+
+    <!-- Schema.org JSON-LD Structured Data for Google Rich Results -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://mribraintumordetection.onrender.com/#software",
+          "name": "NeuroScan",
+          "url": "https://mribraintumordetection.onrender.com/",
+          "description": "Deep learning clinical diagnostic workstation for brain MRI tumor classification and Grad-CAM spatial localization.",
+          "applicationCategory": "HealthApplication",
+          "operatingSystem": "Web Browser",
+          "author": {
+            "@type": "Person",
+            "name": "Siddhant Sawant",
+            "url": "https://github.com/Sidd-commits"
+          },
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          }
+        },
+        {
+          "@type": "MedicalWebPage",
+          "@id": "https://mribraintumordetection.onrender.com/#webpage",
+          "url": "https://mribraintumordetection.onrender.com/",
+          "name": "NeuroScan | Brain MRI Tumor Detection & Spatial AI Suite",
+          "about": [
+            { "@type": "MedicalCondition", "name": "Glioma" },
+            { "@type": "MedicalCondition", "name": "Meningioma" },
+            { "@type": "MedicalCondition", "name": "Pituitary Tumor" }
+          ],
+          "medicalAudience": {
+            "@type": "MedicalAudience",
+            "audienceType": "Medical researchers, neuroradiologists, neurologists"
+          }
+        }
+      ]
+    }
+    </script>
+
     <!-- Core UI Framework & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -144,17 +225,31 @@
         }
 
         .brand-emblem {
-            width: 38px;
-            height: 38px;
-            border-radius: 9px;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
             background: linear-gradient(135deg, rgba(79, 70, 229, 0.25) 0%, rgba(6, 182, 212, 0.15) 100%);
-            border: 1px solid rgba(99, 102, 241, 0.35);
+            border: 1px solid rgba(99, 102, 241, 0.4);
             display: flex;
             align-items: center;
             justify-content: center;
             color: #818cf8;
             font-size: 1.15rem;
-            box-shadow: 0 0 14px rgba(79, 70, 229, 0.2);
+            box-shadow: 0 0 16px rgba(79, 70, 229, 0.25);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .brand-emblem:hover {
+            transform: scale(1.06);
+            box-shadow: 0 0 22px rgba(6, 182, 212, 0.4);
+        }
+
+        .brand-emblem img {
+            width: 30px;
+            height: 30px;
+            display: block;
+            border-radius: 7px;
+            filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.35));
         }
 
         .brand-text-block {
@@ -1659,9 +1754,12 @@
     <!-- Clean Hospital Letterhead for Print/Export -->
     <div class="print-letterhead">
         <div class="print-header-top">
-            <div>
-                <div class="print-brand-title">NEUROSCAN CLINICAL REPORT</div>
-                <div class="print-brand-subtitle">Automated Brain MRI Tumor Classification & Grad-CAM Localization</div>
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <img src="{{ url_for('static', filename='favicon.svg') }}" alt="NeuroScan Logo" width="40" height="40" style="border-radius: 8px;">
+                <div>
+                    <div class="print-brand-title">NEUROSCAN CLINICAL REPORT</div>
+                    <div class="print-brand-subtitle">Automated Brain MRI Tumor Classification & Grad-CAM Localization</div>
+                </div>
             </div>
             <div class="print-meta-table">
                 <div><strong>Report Date:</strong> <span id="printDate"></span></div>
@@ -1677,8 +1775,8 @@
         <!-- Minimalist Top Navigation Bar -->
         <nav class="brand-navbar">
             <div class="brand-identity-group">
-                <div class="brand-emblem">
-                    <i class="bi bi-crosshair2"></i>
+                <div class="brand-emblem" title="NeuroScan AI Medical Platform">
+                    <img src="{{ url_for('static', filename='favicon.svg') }}" alt="NeuroScan Logo">
                 </div>
                 <div class="brand-text-block">
                     <div class="brand-name">NeuroScan<span class="brand-dot">.</span></div>

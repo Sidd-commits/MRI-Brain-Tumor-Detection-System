@@ -519,6 +519,62 @@ def diagnostic_check():
     return res, 200
 
 
+# ==========================================
+# SEO & Static Discovery Endpoints
+# ==========================================
+@app.route('/robots.txt')
+def robots_txt():
+    return send_from_directory(os.path.join(BASE_DIR, 'static'), 'robots.txt', mimetype='text/plain')
+
+
+@app.route('/sitemap.xml')
+def sitemap_xml():
+    return send_from_directory(os.path.join(BASE_DIR, 'static'), 'sitemap.xml', mimetype='application/xml')
+
+
+@app.route('/favicon.ico')
+def favicon_ico():
+    return send_from_directory(os.path.join(BASE_DIR, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+
+# ==========================================
+# Production Response Hygiene & Security
+# ==========================================
+@app.after_request
+def add_production_headers(response):
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+    response.headers['Permissions-Policy'] = 'camera=(), microphone=(), geolocation=()'
+    if request.path.startswith('/static/'):
+        response.headers['Cache-Control'] = 'public, max-age=86400'
+    return response
+
+
+# ==========================================
+# Production Error Handlers
+# ==========================================
+@app.errorhandler(404)
+def handle_not_found(error):
+    return render_template(
+        'index.html',
+        result=None,
+        sample_scans=SAMPLE_SCANS,
+        error_message="Requested resource not found (404). Redirecting to main workstation."
+    ), 404
+
+
+@app.errorhandler(500)
+def handle_server_error(error):
+    return render_template(
+        'index.html',
+        result=None,
+        sample_scans=SAMPLE_SCANS,
+        error_message="Internal diagnostic workstation error encountered (500). Please retry your scan."
+    ), 500
+
+
 if __name__ == '__main__':
     init_model()
     port = int(os.environ.get('PORT', 5000))
